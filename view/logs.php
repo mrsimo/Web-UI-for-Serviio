@@ -32,12 +32,26 @@
 				if (!empty($serviio_log)) {
 				$log = $serviio_log;
 				$file = fopen( $log, "r") or exit('<strong><span style="color:#FF0000;text-align:left;">'.tr('tab_log_open_error','Unable to open Serviio log file!').'</span></strong>');
+				$stack = array();
 				//Output a line of the file until the end is reached
 				while(!feof($file))
 				{
-					echo fgets($file). "<br>";
+					//echo fgets($file). "<br>";
+					array_push($stack, fgets($file));
 				}
 				fclose($file);
+				$reversed = array_reverse($stack);
+				foreach($reversed as $value) {
+					if (strpos($value,'WARN') !== false) {
+						echo "<span style='background-color:yellow'>".$value. "</span><br>";
+					}
+					elseif (strpos($value,'ERROR') !== false) {
+						echo "<span style='background-color:red'>".$value. "</span><br>";
+					}
+					else {
+						echo $value. "<br>";
+					}
+				}
 				}
 				else {
 					echo tr('tab_log_empty','Variable "serviio_log" in config.php is empty.');
