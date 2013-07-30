@@ -21,6 +21,8 @@ class ServiioService extends RestRequest
     public $profiles;
     public $renderers;
     public $boundNICName;
+	public $rendererEnabledByDefault;
+	public $defaultAccessGroupId;
 
     public $audioLocalArtExtractorEnabled;
     public $videoLocalArtExtractorEnabled;
@@ -43,12 +45,15 @@ class ServiioService extends RestRequest
 	public $embeddedSubtitlesExtractionEnabled;
 	public $hardSubsEnabled;
 	public $hardSubsForced;
+	public $preferredLanguage;
+	public $hardSubsCharacterEncoding;
 
     public $numberOfCPUCores;
 
     public $presentationLanguage;
     public $showParentCategoryTitle;
     public $numberOfFilesForDynamicCategories;
+	public $filterOutSeries;
 
     public $remoteUserPassword;
     public $preferredRemoteDeliveryQuality;
@@ -84,6 +89,8 @@ class ServiioService extends RestRequest
         }
         $serverStatus = (string)$xml->serverStatus;
         $boundNICName = (string)$xml->boundNICName;
+		$rendererEnabledByDefault = (string)$xml->rendererEnabledByDefault;
+		$defaultAccessGroupId = (string)$xml->defaultAccessGroupId;
         $this->renderers = array();
         foreach ($xml->renderers->renderer as $item) {
             $uuid = (string)$item->uuid;
@@ -96,7 +103,7 @@ class ServiioService extends RestRequest
             $this->renderers[$uuid] = array($ipAddress, $name, $profileId, $status, $enabled, $accessGroupId);
         }
         //return array("serverStatus"=>$serverStatus, "renderers"=>$this->renderers, "bound_nic"=>$bound_nic);
-        return array("serverStatus"=>$serverStatus, "renderers"=>$this->renderers, "boundNICName"=>$boundNICName);
+        return array("serverStatus"=>$serverStatus, "renderers"=>$this->renderers, "boundNICName"=>$boundNICName, "rendererEnabledByDefault"=>$rendererEnabledByDefault, "defaultAccessGroupId"=>$defaultAccessGroupId);
     }
 
     /**
@@ -460,13 +467,15 @@ class ServiioService extends RestRequest
         $hardSubsEnabled = (string)$subtitles->hardSubsEnabled;
         $hardSubsForced = (string)$subtitles->hardSubsForced;
 		$preferredLanguage = (string)$subtitles->preferredLanguage;
+		$hardSubsCharacterEncoding = (string)$subtitles->hardSubsCharacterEncoding;
 		$this->subtitlesEnabled = $subtitlesEnabled;
         $this->embeddedSubtitlesExtractionEnabled = $embeddedSubtitlesExtractionEnabled;
         $this->hardSubsEnabled = $hardSubsEnabled;
         $this->hardSubsForced = $hardSubsForced;
         $this->preferredLanguage = $preferredLanguage;
+		$this->hardSubsCharacterEncoding = $hardSubsCharacterEncoding;
         
-        return array($audioDownmixing, $threadsNumber, $transcodingFolderLocation, $bestVideoQuality, $transcodingEnabled, $subtitlesEnabled, $embeddedSubtitlesExtractionEnabled, $hardSubsEnabled, $hardSubsForced, $preferredLanguage);
+        return array($audioDownmixing, $threadsNumber, $transcodingFolderLocation, $bestVideoQuality, $transcodingEnabled, $subtitlesEnabled, $embeddedSubtitlesExtractionEnabled, $hardSubsEnabled, $hardSubsForced, $preferredLanguage, $hardSubsCharacterEncoding);
     }
 
     /**
@@ -499,9 +508,11 @@ class ServiioService extends RestRequest
         $presentationLanguage = (string)$xml->language;
         $showParentCategoryTitle = (string)$xml->showParentCategoryTitle;
         $numberOfFilesForDynamicCategories = (string)$xml->numberOfFilesForDynamicCategories;
+		$filterOutSeries = (string)$xml->filterOutSeries;
         $this->presentationLanguage = $presentationLanguage;
         $this->showParentCategoryTitle = $showParentCategoryTitle;
         $this->numberOfFilesForDynamicCategories = $numberOfFilesForDynamicCategories;
+		$this->filterOutSeries = $filterOutSeries;
         return $categories;
     }
     
@@ -534,7 +545,7 @@ class ServiioService extends RestRequest
 
     /**
      */
-    public function putStatus($profiles, $bound_nic)
+    public function putStatus($profiles, $bound_nic, $rendererEnabledByDefault, $defaultAccessGroupId)
     {
         // create the xml document
         $xmlDoc = new DOMDocument();
@@ -546,6 +557,8 @@ class ServiioService extends RestRequest
         $root = $xmlDoc->appendChild($xmlDoc->createElement("status"));
 		
 		$root->appendChild($xmlDoc->createElement("boundNICName", $bound_nic));
+		$root->appendChild($xmlDoc->createElement("rendererEnabledByDefault", $rendererEnabledByDefault));
+		$root->appendChild($xmlDoc->createElement("defaultAccessGroupId", $defaultAccessGroupId));
 
         // create sub element
         $Rends = $root->appendChild($xmlDoc->createElement("renderers"));
@@ -698,7 +711,7 @@ class ServiioService extends RestRequest
 
     /**
      */
-    public function putDelivery($transcoding, $location, $cores, $audio, $quality, $subtitles, $subtitlesextraction, $hardsubsenabled, $hardsubsforced, $language)
+    public function putDelivery($transcoding, $location, $cores, $audio, $quality, $subtitles, $subtitlesextraction, $hardsubsenabled, $hardsubsforced, $language, $characterEncoding)
     {
         // create the xml document
         $xmlDoc = new DOMDocument();
@@ -710,24 +723,25 @@ class ServiioService extends RestRequest
         $root = $xmlDoc->appendChild($xmlDoc->createElement("delivery"));
 
         //create the transcoding element
-        $delivery = $root->appendChild($xmlDoc->createElement("transcoding"));
+        $deliveryTranscoding = $root->appendChild($xmlDoc->createElement("transcoding"));
 
-        // create sub element
-        $delivery->appendChild($xmlDoc->createElement("audioDownmixing", $audio));
-        $delivery->appendChild($xmlDoc->createElement("threadsNumber", $cores));
-        $delivery->appendChild($xmlDoc->createElement("transcodingFolderLocation", $location));
-        $delivery->appendChild($xmlDoc->createElement("transcodingEnabled", $transcoding));
-		$delivery->appendChild($xmlDoc->createElement("bestVideoQuality", $quality));
+        // create sub elements for transcoding
+        $deliveryTranscoding->appendChild($xmlDoc->createElement("audioDownmixing", $audio));
+        $deliveryTranscoding->appendChild($xmlDoc->createElement("threadsNumber", $cores));
+        $deliveryTranscoding->appendChild($xmlDoc->createElement("transcodingFolderLocation", $location));
+        $deliveryTranscoding->appendChild($xmlDoc->createElement("transcodingEnabled", $transcoding));
+		$deliveryTranscoding->appendChild($xmlDoc->createElement("bestVideoQuality", $quality));
 		
-		//create the transcoding element
-        $delivery1 = $root->appendChild($xmlDoc->createElement("subtitles"));
+		//create the subtitles element
+        $deliverySubtitles = $root->appendChild($xmlDoc->createElement("subtitles"));
 
-        // create sub element
-        $delivery1->appendChild($xmlDoc->createElement("subtitlesEnabled", $subtitles));
-        $delivery1->appendChild($xmlDoc->createElement("embeddedSubtitlesExtractionEnabled", $subtitlesextraction));
-        $delivery1->appendChild($xmlDoc->createElement("hardSubsEnabled", $hardsubsenabled));
-        $delivery1->appendChild($xmlDoc->createElement("hardSubsForced", $hardsubsforced));
-        $delivery1->appendChild($xmlDoc->createElement("preferredLanguage", $language));
+        // create sub elements for subtitles
+        $deliverySubtitles->appendChild($xmlDoc->createElement("subtitlesEnabled", $subtitles));
+        $deliverySubtitles->appendChild($xmlDoc->createElement("embeddedSubtitlesExtractionEnabled", $subtitlesextraction));
+        $deliverySubtitles->appendChild($xmlDoc->createElement("hardSubsEnabled", $hardsubsenabled));
+        $deliverySubtitles->appendChild($xmlDoc->createElement("hardSubsForced", $hardsubsforced));
+        $deliverySubtitles->appendChild($xmlDoc->createElement("preferredLanguage", $language));
+		$deliverySubtitles->appendChild($xmlDoc->createElement("hardSubsCharacterEncoding", $characterEncoding));
 
         /*
         header("Content-Type: text/plain");
@@ -874,7 +888,7 @@ class ServiioService extends RestRequest
 
     /**
      */
-    public function putPresentation($categories, $presentationLanguage, $showParentCategoryTitle, $numberOfFilesForDynamicCategories)
+    public function putPresentation($categories, $presentationLanguage, $showParentCategoryTitle, $numberOfFilesForDynamicCategories, $filterOutSeries)
     {
         //create the xml document
         $xmlDoc = new DOMDocument();
@@ -906,6 +920,7 @@ class ServiioService extends RestRequest
         $root->appendChild($xmlDoc->createElement("language", $presentationLanguage));
         $root->appendChild($xmlDoc->createElement("showParentCategoryTitle", $showParentCategoryTitle));
         $root->appendChild($xmlDoc->createElement("numberOfFilesForDynamicCategories", $numberOfFilesForDynamicCategories));
+		$root->appendChild($xmlDoc->createElement("filterOutSeries", $filterOutSeries));
 
         /*
         header("Content-Type: text/plain");
