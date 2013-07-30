@@ -22,8 +22,9 @@
 			$hardsubsenabled = getPostVar("hardsubsenabled","0")==1&&(getPostVar("hardsubs","")=="enabled"||getPostVar("hardsubs","")=="")?"true":"false";
 			$hardsubsforced = getPostVar("hardsubsenabled","0")==1&&getPostVar("hardsubs","0")=="forced"?"true":"false";
 			$language = getPostVar("language","");
+			$characterEncoding = getPostVar("characterEncoding","");
 
-			$errorCode = $serviio->putDelivery($transcoding,$location,$cores,$audio,$quality,$subtitles,$subtitlesextraction,$hardsubsenabled,$hardsubsforced,$language);
+			$errorCode = $serviio->putDelivery($transcoding,$location,$cores,$audio,$quality,$subtitles,$subtitlesextraction,$hardsubsenabled,$hardsubsforced,$language,$characterEncoding);
 			if ($errorCode===false || $errorCode!=0) {
 				$message = $serviio->warning;
 			}
