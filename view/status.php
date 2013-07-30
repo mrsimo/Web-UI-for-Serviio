@@ -68,7 +68,27 @@
     </tr>
     <?php $ctr+=1; ?>
     <?php } ?>
-    </table><td>
+    </table>
+	
+	<br>
+	
+	<table width="440">
+		<tr>
+			<td>
+				<input type="checkbox" name="rendererEnabledByDefault" value="1"<?php echo $statusResponse["rendererEnabledByDefault"]=="true"?" checked":""?>> <?php echo tr('tab_status_enable_renderer_by_default','Enable access for new devices')?>
+            </td>
+			<td>
+				<?php echo tr('tab_status_default_access_group','Default access group').": "?>
+				<select name="defaultAccessGroupId" <?php echo ($serviio->licenseEdition=="PRO"?'':'disabled="disabled" title="Enabled with PRO License"')?>>
+					<?php foreach ($accesses as $key=>$val) { ?>
+						<option value="<?php echo $key?>"<?php echo $key==$statusResponse["defaultAccessGroupId"]?" selected":""?>><?php echo $val?></option>
+					<?php } ?>
+				</select>
+			</td>
+		</tr>
+	</table>
+
+	<td>
     <td width="100">
 <input type="submit" name="refresh" value="<?php echo tr('button_refresh','Refresh')?>" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
 <br>
