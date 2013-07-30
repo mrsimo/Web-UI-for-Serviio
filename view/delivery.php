@@ -1,6 +1,6 @@
 <form method="post" action="" id="deliveryform" name="delivery" accept-charset="utf-8">
     <input type="hidden" name="tab" value="delivery">
-    <input type="hidden" id="process" name="process" value="">
+	<input type="hidden" id="process" name="process" value="">
     <br>
     
     <ul id="deliverytabs" class="shadetabs">
@@ -67,6 +67,9 @@
 					<option value="enabled"<?php echo $serviio->hardSubsEnabled=="true"?" selected":""?>><?php echo tr('tab_delivery_subtitles_hard_subs_required','Only when required')?></option>
 					<option value="forced"<?php echo $serviio->hardSubsForced=="true"?" selected":""?>><?php echo tr('tab_delivery_subtitles_hard_subs_always','Always')?></option>
 				</select>
+			<br>
+			<?php echo tr('tab_delivery_subtitles_character_encoding','Subtitle character encoding')": "?><input type="text" name="characterEncoding" value="<?php echo $serviio->hardSubsCharacterEncoding?>" maxlength="10">
+			
 			<br>
 			<br>
             
