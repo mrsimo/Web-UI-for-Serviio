@@ -25,8 +25,10 @@
 				}
 			}
 			$bound_nic = getPostVar("bound_nic", "");
+			$rendererEnabledByDefault = getPostVar("rendererEnabledByDefault", "0")==1?"true":"false";
+			$defaultAccessGroupId = getPostVar("defaultAccessGroupId", "1");
 			
-			$errorCode = $serviio->putStatus($profiles, $bound_nic);
+			$errorCode = $serviio->putStatus($profiles, $bound_nic, $rendererEnabledByDefault, $defaultAccessGroupId);
 			return $errorCode;
 		}
 		
