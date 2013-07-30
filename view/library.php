@@ -1,6 +1,6 @@
 <form method="post" action="" id="libraryform" name="library" accept-charset="utf-8">
     <input type="hidden" name="tab" value="library">
-    <input type="hidden" id="process" name="process" value="">
+	<input type="hidden" id="process" name="process" value="">
     <br>
 
     <ul id="librarytabs" class="shadetabs">
@@ -106,20 +106,26 @@
             <?php echo tr('tab_library_online_sources_description','Define online source that you would like to access. Online sources are constantly monitored for updates and cached for a period of time. It might take a moment for new sources to appear on your device.')?><br>
             <br>
             <div style="padding-left: 3px;">
-                <button type="button" id="add_os" name="add_os" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-                    <?php echo tr('button_add','Add')?>
-                </button>&nbsp;&nbsp;
-                <button type="button" id="add_serviidb" name="add_serviidb" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-                    <?php echo tr('button_add_Serviidb','Add from ServiiDB')?>
-                </button>&nbsp;&nbsp;
-                <button type="button" id="edit_os" name="edit_os" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-                    <?php echo tr('button_edit','Edit')?>
-                </button>&nbsp;&nbsp;
-                <button type="button" id="removeOnlineSource" name="removeOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-                    <?php echo tr('button_remove','Remove')?>
-                </button><!--" onclick="if(confirm('Are you sure you want to remove selected online source?')) { deleteLibRow('libraryTableOnlineSources'); }">-->
-                <br>
-            </div>
+				<button type="button" id="add_os" name="add_os" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+					<?php echo tr('button_add','Add')?>
+				</button>&nbsp;&nbsp;
+				<button type="button" id="add_serviidb" name="add_serviidb" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+					<?php echo tr('button_add_Serviidb','Add from ServiiDB')?>
+				</button>&nbsp;&nbsp;
+				<button type="button" id="edit_os" name="edit_os" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+					<?php echo tr('button_edit','Edit')?>
+				</button>&nbsp;&nbsp;
+				<button type="button" id="removeOnlineSource" name="removeOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+					<?php echo tr('button_remove','Remove')?>
+				</button>&nbsp;&nbsp;<!--" onclick="if(confirm('Are you sure you want to remove selected online source?')) { deleteLibRow('libraryTableOnlineSources'); }">-->
+				<button type="button" id="importOnlineSource" name="importOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+					<?php echo tr('button_import','Import')?>
+				</button>&nbsp;&nbsp;
+				<button type="button" id="exportOnlineSource" name="exportOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+					<?php echo tr('button_export','Export')?>
+				</button>
+				<br>
+			</div>
             <table>
                 <tr valign="top">
                     <td>
@@ -401,4 +407,3 @@
 <div id="dialog-remove-library" style="display: none;" title="<?php echo tr('dialog_remove_selected_folder','Remove selected Folder?')?>">
     <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span><?php echo tr('dialog_remove_message','This will remove the selected folder. Are you sure?')?></p>
 </div>
-
