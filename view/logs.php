@@ -38,12 +38,12 @@
 	<li><a href="#" rel="logs2" class="selected"><?php echo tr('tab_log_content','Log file content')?></a></li>
 </ul>
 
-<div id="dialog-form" title="<?php echo tr('dialog_select_log_file','Select Serviio log file')?>">
+<div id="dialog-form1" title="<?php echo tr('dialog_select_log_file','Select Serviio log file')?>">
     <form accept-charset="utf-8">
         <fieldset>
-            <label for="selValue"><?php echo tr('dialog_select_file','Selected file')?>:&nbsp;</label>
-            <input type="text" id="selValue" name="selValue" readonly="readonly" size="70" />
-            <div id="smallbrowser"></div>
+            <label for="selValue1"><?php echo tr('dialog_select_file','Selected file')?>:&nbsp;</label>
+            <input type="text" id="selValue1" name="selValue1" readonly="readonly" size="70" />
+            <div id="smallbrowser1"></div>
         </fieldset>
     </form>
 </div>
