@@ -72,7 +72,7 @@
 	
 	<br>
 	
-	<table width="440">
+	<table width="880">
 		<tr>
 			<td>
 				<input type="checkbox" name="rendererEnabledByDefault" value="1"<?php echo $statusResponse["rendererEnabledByDefault"]=="true"?" checked":""?>> <?php echo tr('tab_status_enable_renderer_by_default','Enable access for new devices')?>
