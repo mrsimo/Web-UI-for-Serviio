@@ -1,6 +1,6 @@
 <form method="post" action="" id="presentationform" name="presentation" accept-charset="utf-8">
     <input type="hidden" name="tab" value="presentation">
-    <input type="hidden" id="process" name="process" value="">
+	<input type="hidden" id="process" name="process" value="">
     <br>
     <?php echo tr('tab_presentation_description','You can modify the categories of the browsing menu on your device. Choose categories to be visible, \'transparent\' or disabled.')?>
     <br>
@@ -43,30 +43,34 @@
             </td>
             <?php } ?>
         </tr>
-    </table>
+	</table>
+	<table width="1000">
+		<tr>
+			<td width="60%">
+				<input type="checkbox" name="showParentCategoryTitle" value="1"<?php echo $serviio->showParentCategoryTitle=="true"?" checked":""?>>
+				<?php echo tr('tab_presentation_include_category_title_for_content_only_content','Include parents title for items in "Display content only" categories')?>
+			</td>
+			<td width="40%">
+				<input type="checkbox" name="filterOutSeries" value="1"<?php echo $serviio->filterOutSeries=="true"?" checked":""?>>
+				<?php echo tr('tab_presentation_filter_out_series','Show series in relevant category only')?>
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<?php echo tr('tab_presentation_languages_description','Select preferred language of the browsing menu.')?>
+				<select name="presentation_language">
+					<?php foreach ($browsingCategoriesLanguages as $key=>$val) { ?>
+						<option value="<?php echo $key?>"<?php echo $key==$serviio->presentationLanguage?" selected":""?>><?php echo $val?></option>
+					<?php } ?>
+				</select>
+			</td>
+			<td width="40%">
+				<?php echo tr('tab_presentation_dynamic_categories','Number of items in dynamic categories')?>:&nbsp;
+				<input type="text" name="numberOfFilesForDynamicCategories" id="numberOfFilesForDynamicCategories" size="2" value="<?php echo $serviio->numberOfFilesForDynamicCategories ?>">
+			</td>
+		</tr>
+	</table>
 
-    <input type="checkbox" name="showParentCategoryTitle" value="1"<?php echo $serviio->showParentCategoryTitle=="true"?" checked":""?>> 
-    <?php echo tr('tab_presentation_include_category_title_for_content_only_content','Include parents title for items in "Display content only" categories')?>
-    <br>
-    <br>
-    <table width="90%">
-        <tr>
-            <td>
-                <?php echo tr('tab_presentation_languages_description','Select preferred language of the browsing menu.')?>
-                <br>
-                <br>
-                <select name="presentation_language">
-                    <?php foreach ($browsingCategoriesLanguages as $key=>$val) { ?>
-                        <option value="<?php echo $key?>"<?php echo $key==$serviio->presentationLanguage?" selected":""?>><?php echo $val?></option>
-                    <?php } ?>
-                </select>
-            </td>
-            <td align="right"> 
-                <?php echo tr('tab_presentation_dynamic_categories','Number of items in dynamic categories')?>:&nbsp;
-                <input type="text" name="numberOfFilesForDynamicCategories" id="numberOfFilesForDynamicCategories" size="2" value="<?php echo $serviio->numberOfFilesForDynamicCategories ?>">
-            </td>
-        </tr>
-    </table>
     <br>
     <div align="right">
         <span id="savingMsg" class="savingMsg"></span>
