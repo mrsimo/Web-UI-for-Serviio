@@ -45,6 +45,11 @@ CHANGELOG:
                      - Re-activated check for compatible Serviio version
                      - Unified button behavior
                      - Minor bugfixes
+- 1.4b4 - 07/28/2013 - For log files, latest events are now shown on top, warnings are highlighted in yellow, errors in red
+- 1.5b1 - 07/31/2013 - Updated to work with Serviio 1.3 (Import/Export of online sources not yet implemented)
+                     - Log file can now be browsed
+                     - Retrieve metadata now clickable when adding new sources
+                     - Switched metadata and delivery tab
 
 
 HISTORY:
