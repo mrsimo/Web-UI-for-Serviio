@@ -68,7 +68,7 @@
 					<option value="forced"<?php echo $serviio->hardSubsForced=="true"?" selected":""?>><?php echo tr('tab_delivery_subtitles_hard_subs_always','Always')?></option>
 				</select>
 			<br>
-			<?php echo tr('tab_delivery_subtitles_character_encoding','Subtitle character encoding')": "?><input type="text" name="characterEncoding" value="<?php echo $serviio->hardSubsCharacterEncoding?>" maxlength="10">
+			<?php echo tr('tab_delivery_subtitles_character_encoding','Subtitle character encoding').": "?><input type="text" name="characterEncoding" value="<?php echo $serviio->hardSubsCharacterEncoding?>" maxlength="10">
 			
 			<br>
 			<br>
