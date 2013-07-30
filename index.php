@@ -75,6 +75,9 @@ $appInfo = $serviio->getApplication();
 <script src="tree/jquery_folder_tree/jquery.foldertree.js" type="text/javascript"></script>
 <link href="tree/jquery_folder_tree/style.css" rel="stylesheet" type="text/css" />
 
+<script src="filetree/jqueryFileTree.js" type="text/javascript"></script>
+<link href="filetree/jqueryFileTree.css" rel="stylesheet" type="text/css" />
+
 <script src="js/DataTables-1.9.4/media/js/jquery.dataTables.min.js" type="text/javascript"></script>
 <style type="text/css" title="currentStyle">
     @import "js/DataTables-1.9.4/media/css/demo_page.css";
@@ -192,7 +195,7 @@ function addLibRow(tableID,path,newid) {
     element7.type = "checkbox";
     element7.name = "ONLINE_"+id;
     element7.value = 1;
-    element7.disabled = true;
+    //element7.disabled = true;
     cell6.appendChild(element7);
 
     var cell7 = row.insertCell(7);
@@ -346,8 +349,8 @@ if ($message!="") {
     <ul id="indextabs" class="shadetabs">
         <li><a href="content.php?tab=status" rel="indexcontainer" class="selected"><?php echo tr('tab_status','Status')?></a></li>
         <li><a href="content.php?tab=library" rel="indexcontainer"><?php echo tr('tab_library','Library')?></a></li>
+		<li><a href="content.php?tab=delivery" rel="indexcontainer"><?php echo tr('tab_delivery','Delivery')?></a></li>
         <li><a href="content.php?tab=metadata" rel="indexcontainer"><?php echo tr('tab_metadata','Metadata')?></a></li>
-        <li><a href="content.php?tab=delivery" rel="indexcontainer"><?php echo tr('tab_delivery','Delivery')?></a></li>
         <li><a href="content.php?tab=presentation" rel="indexcontainer"><?php echo tr('tab_presentation','Presentation')?></a></li>
         <?php echo ($serviio->licenseEdition=="PRO"?'<li><a href="content.php?tab=remote" rel="indexcontainer">'.tr('tab_remote','Remote').'</a></li>':'')?>
         <li><a href="content.php?tab=settings" rel="indexcontainer"><?php echo tr('tab_console_settings','Console Settings')?></a></li>
@@ -1487,6 +1490,86 @@ indexes.onajaxpageload=function(pageurl) {
         conTabs.setpersist(false)
         conTabs.setselectedClassTarget("link") //"link" or "linkparent"
         conTabs.init()
+		
+		var fileName;
+
+        $(document).ready(function(){
+            $("#debugInfo").text("");
+            $("#debugInfoDate").text("");
+            $("#debugInfo2").text("");
+            $("#debugInfo2Date").text("");
+            var $form = $("#logform");
+            $("#submit").click(function(e) {
+                $("#process").val("save");
+                $("#savingMsg").text("<?php echo tr('status_message_saving','Saving...')?>");
+                $("#savingMsg").first().show();
+                $("#debugInfo").text(parseUrl(decodeURIComponent($form.serialize())));
+                $("#debugInfoDate").text(Date());
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: 'code/logs.php',
+                    data: $form.serialize(),
+                    dataType: 'xml',
+                    timeout: 10000,
+                    success: function(response) {
+                        $("#debugInfo2Date").text(Date());
+                        $("#debugInfo2").text(serializeXmlNode(response));
+                        $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
+                        $("#savingMsg").delay(800).fadeOut("slow");
+                                                /* refresh in case language was changed */
+                                                location.reload();
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        alert("Error: " + textStatus)
+                        $("#debugInfo2Date").text(Date());
+                        $("#debugInfo2").text(errorThrown);
+                    }
+                });
+                return false;
+            });
+                        $("#reset").click(function(e) {
+                                location.reload();
+                                return false;
+                        });
+
+
+         $("#smallbrowser1").fileTree({
+                root: '/',
+                script: 'filetree/jqueryFileTree.php',
+                loadMessage: 'My loading message...',
+                multiFolder: false
+            },function(file) {
+                //alert(file);
+                $("#selValue1").val(file);
+                fileName=file;
+                });
+				
+				
+				$("#dialog-form1").dialog({
+                autoOpen: false,
+                height: 410,
+                width: 570,
+                modal: true,
+                buttons: {
+                    "<?php echo tr('button_select_folder','Select Folder')?>": function(file) {
+                        $("#logfile").val(fileName);
+                        $(this).dialog("close");
+                    },
+                    <?php echo tr('button_cancel','Cancel')?>: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $("#addLogFile").click(function(e) {
+                e.preventDefault();
+                $("#dialog-form1").dialog("open");
+                return false;
+            });
+                });
+				
+				
     }
     //-------------------------------------------------------------------------
     if (pageurl.indexOf("content.php?tab=about")!=-1) {
