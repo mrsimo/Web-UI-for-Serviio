@@ -15,6 +15,7 @@
 			$presentation_language = getPostVar("presentation_language", "en");
 			$showParentCategoryTitle = getPostvar("showParentCategoryTitle", "0")=="1"?"true":"false";
 			$numberOfFilesForDynamicCategories = getPostvar("numberOfFilesForDynamicCategories", "10");
+			$filterOutSeries = getPostvar("filterOutSeries", "0")=="1"?"true":"false";
 
 			$titles = isset($_POST['titles'])?$_POST['titles']:0;
 			$visibilities = isset($_POST['visibility'])?$_POST['visibility']:0;
@@ -35,7 +36,7 @@
 					$categories[$id] = array($title, $visibility, $subCategories);
 				}
 			}
-			$errorCode = $serviio->putPresentation($categories, $presentation_language, $showParentCategoryTitle, $numberOfFilesForDynamicCategories);
+			$errorCode = $serviio->putPresentation($categories, $presentation_language, $showParentCategoryTitle, $numberOfFilesForDynamicCategories, $filterOutSeries);
 			return $errorCode;
 		}
 	}
