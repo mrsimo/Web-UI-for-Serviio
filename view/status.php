@@ -56,7 +56,13 @@
         </td>
 
         <td><select name="access_<?php echo $id?>" <?php echo ($serviio->licenseEdition=="PRO"?'':'disabled="disabled" title="Enabled with PRO License"')?>>
-		<?php foreach ($accesses as $key=>$val) { ?>
+		<?php foreach ($accesses as $key=>$val) {
+			if($val=="No_Restriction") {
+				$val="No Restriction";
+			}
+			elseif($val=="Limited_Access") {
+				$val="Limited Access";
+			} ?>
 			<option value="<?php echo $key?>"<?php echo $key==$renderer[5]?" selected":""?>><?php echo $val?></option>
 		<?php } ?>
         </select></td>
@@ -80,7 +86,13 @@
 			<td>
 				<?php echo tr('tab_status_default_access_group','Default access group').": "?>
 				<select name="defaultAccessGroupId" <?php echo ($serviio->licenseEdition=="PRO"?'':'disabled="disabled" title="Enabled with PRO License"')?>>
-					<?php foreach ($accesses as $key=>$val) { ?>
+					<?php foreach ($accesses as $key=>$val) {
+						if($val=="No_Restriction") {
+							$val="No Restriction";
+						}
+						elseif($val=="Limited_Access") {
+							$val="Limited Access";
+						} ?>
 						<option value="<?php echo $key?>"<?php echo $key==$statusResponse["defaultAccessGroupId"]?" selected":""?>><?php echo $val?></option>
 					<?php } ?>
 				</select>

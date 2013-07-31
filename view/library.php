@@ -52,6 +52,12 @@
 					if ($serviio->licenseEdition=="PRO") {
 						echo '<td><select name="access_'.$id.'">';
 						foreach ($accesses as $key=>$val) {
+							if($val=="No_Restriction") {
+								$val="No Restriction";
+							}
+							elseif($val=="Limited_Access") {
+								$val="Limited Access";
+							}
 							echo '<option value="'.$key.'"'.($key==max($entry[4])?' selected':'').'>'.$val.'</option>';
 						}
 						echo '</select></td>';
