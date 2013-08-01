@@ -160,11 +160,11 @@ function addLibRow(tableID,path,newid) {
     element2a.name = "access_"+id;
     var option1 = document.createElement("option");
     option1.value = "1";
-    option1.innerHTML = "Full";
+    option1.innerHTML = "No Restriction";
     element2a.appendChild(option1);
     var option2 = document.createElement("option");
     option2.value = "2";
-    option2.innerHTML = "Limited";                           
+    option2.innerHTML = "Limited Access";                           
     element2a.appendChild(option2);
     element2a.selectedItem = "1";
     cell2a.appendChild(element2a);
@@ -722,14 +722,23 @@ indexes.onajaxpageload=function(pageurl) {
                         var newID = 1 + parseInt($("#lastOSId").val());
                         $("#lastOSId").val(newID);
 
-                        var srcImg = "";
-                        var srcTxt = $('input:radio[name=newMediaType]:checked').val();
-                        if (srcTxt == "VIDEO") {
-                            srcImg = "images/film.png";
-                        } else if (srcTxt == "AUDIO") {
-                            srcImg = "images/music-beam.png";
-                        } else if (srcTxt == "IMAGE") {
-                            srcImg = "images/camera-black.png";
+                        var srcMediaTypeImg = "";
+                        var srcMediaTypeTxt = $('input:radio[name=newMediaType]:checked').val();
+                        if (srcMediaTypeTxt == "VIDEO") {
+                            srcMediaTypeImg = "images/icon_video.png";
+                        } else if (srcMediaTypeTxt == "AUDIO") {
+                            srcMediaTypeImg = "images/icon_music.png";
+                        } else if (srcMediaTypeTxt == "IMAGE") {
+                            srcMediaTypeImg = "images/icon_camera.png";
+                        }
+						var srcFeedTypeImg = "";
+						var srcFeedTypeTxt = $("#newOnlineFeedType").val();
+						if (srcFeedTypeTxt == "FEED") {
+                            srcFeedTypeImg = "images/icon_feed.png";
+                        } else if (srcFeedTypeTxt == "WEB_RESOURCE") {
+                            srcFeedTypeImg = "images/icon_web_resource.png";
+                        } else if (srcFeedTypeTxt == "LIVE_STREAM") {
+                            srcFeedTypeImg = "images/icon_satelite_black.png";
                         }
                         $("#libraryTableOnlineSources").find('tbody')
                             .append($('<tr>').attr('align', 'center')
@@ -742,12 +751,19 @@ indexes.onajaxpageload=function(pageurl) {
                                     .append($('<input>').attr('type', 'hidden').attr('id', 'os_name_'+newID).attr('name', 'os_name_'+newID).attr('value', $("#newName").val()))
                                     .append($('<input>').attr('type', 'hidden').attr('id', 'os_stat_'+newID).attr('name', 'os_stat_'+newID).attr('value', ($("#newEnabled").attr('checked'))=="checked"?'true':''))
                                 )
-                                .append($('<td>')
-                                    .append($('<span>')
-                                        .html('&nbsp;New&nbsp;')
+                                .append($('<td>').attr('style', 'vertical-align: top;').attr('width', '40')
+                                    .append($('<span>').attr('id', 'os_type_v_'+newID).attr('name', 'os_type_v_'+newID)
+										.append($('<img>').attr('src', srcFeedTypeImg).attr('height', "16").attr('alt', srcFeedTypeTxt))
+										.append(' '+srcFeedTypeTxt)										
                                     )
                                 )
-                                .append($('<td>')
+								.append($('<td>').attr('style', 'vertical-align: top;').attr('width', '30')
+                                    .append($('<span>').attr('id', 'os_media_v_'+newID).attr('name', 'os_media_v_'+newID)
+                                        .append($('<img>').attr('src', srcMediaTypeImg).attr('height', "16").attr('alt', srcMediaTypeTxt))
+                                        .append(' '+srcMediaTypeTxt)
+                                    )
+                                )
+								.append($('<td>')
                                     .append($('<div>').attr('class', 'os_switch').attr('id', 'os_switch_'+newID).attr('name', 'os_switch_'+newID).attr('style', 'cursor: pointer;')
                                         .append($('<div>').attr('class', 'iphone_switch_container').attr('style', 'height:16px; width:56px; position: relative; overflow: hidden;')
                                             .append($('<img>')
@@ -759,25 +775,27 @@ indexes.onajaxpageload=function(pageurl) {
                                     )
                                 )
                                 .append($('<td>').attr('align', 'left')
-                                    .append($('<span>')
-                                        .attr('id', 'os_type_v_'+newID)
-                                        .attr('name', 'os_type_v_'+newID)
-                                        .text($("#newOnlineFeedType").val())
-                                    )
-                                )
-                                .append($('<td>').attr('align', 'left')
                                     .append($('<select>')
                                         .attr('id', 'os_access_'+newID)
                                         .attr('name', 'os_access_'+newID)
                                         .append($('<option>')
                                             .attr('value', '1')
                                             .attr('selected', 'selected')
-                                            .text('Full')
+                                            .text('No Restriction')
                                         )
                                         .append($('<option>')
                                             .attr('value', '2')
-                                            .text('Limited')
+                                            .text('Limited Access')
                                         )
+                                    )
+                                )
+								.append($('<td>')
+                                    .append($('<span>')
+                                        .html('&nbsp;New&nbsp;')
+                                    )
+                                )
+								.append($('<td>')
+                                    .append($('<span>')
                                     )
                                 )
                                 .append($('<td>').attr('align', 'left')
@@ -786,12 +804,6 @@ indexes.onajaxpageload=function(pageurl) {
                                         .attr('name', 'os_name_v_'+newID)
                                         .attr('title', $("#newSourceURL").val())
                                         .text(($("#newName").val())?$("#newName").val():$("#newSourceURL").val())
-                                    )
-                                )
-                                .append($('<td>').attr('style', 'vertical-align: top;').attr('width', '30')
-                                    .append($('<span>').attr('id', 'os_media_v_'+newID).attr('name', 'os_media_v_'+newID)
-                                        .append($('<img>').attr('src', srcImg).attr('alt', srcTxt))
-                                        .append(' '+srcTxt)
                                     )
                                 )
                             );
@@ -854,42 +866,53 @@ indexes.onajaxpageload=function(pageurl) {
                             var newID = 1 + parseInt($("#lastOSId").val());
                             $("#lastOSId").val(newID);
 
-                            var srcImg = "";
-                            var srcTxt = "";
-                            srcTxt = sData['mediaType'];
-                            srcTxt = srcTxt.toUpperCase();
-                            if (srcTxt == "VIDEO") {
-                                srcImg = "images/film.png";
-                            } else if (srcTxt == "AUDIO") {
-                                srcImg = "images/music-beam.png";
-                            } else if (srcTxt == "IMAGE") {
-                                srcImg = "images/camera-black.png";
-                            }
-                            var srcFeed = "FEED";
-                            if (sData['resourceType'] == "RSS Atom Feed") {
-                                srcFeed = "FEED";
-                            } else if (sData['resourceType'] == "Web Resource") {
-                                srcFeed = "WEB_RESOURCE";
-                            } else if (sData['resourceType'] == "Live Stream") {
-                                srcFeed = "LIVE_STREAM";
-                            }
+                            var srcMediaTypeImg = "";
+                            var srcMediaTypeTxt = "";
+                            srcMediaTypeTxt = sData['mediaType'];
+                            srcMediaTypeTxt = srcMediaTypeTxt.toUpperCase();
+							if (srcMediaTypeTxt == "VIDEO") {
+								srcMediaTypeImg = "images/icon_video.png";
+							} else if (srcMediaTypeTxt == "AUDIO") {
+								srcMediaTypeImg = "images/icon_music.png";
+							} else if (srcMediaTypeTxt == "IMAGE") {
+								srcMediaTypeImg = "images/icon_camera.png";
+							}
+							var srcFeedTypeImg = "";
+							var srcFeedTypeTxt = sData['resourceType'];
+							if (srcFeedTypeTxt == "RSS Atom Feed") {
+								srcFeedTypeTxt = "FEED";
+								srcFeedTypeImg = "images/icon_feed.png";
+							} else if (srcFeedTypeTxt == "Web Resource") {
+								srcFeedTypeTxt = "WEB_RESOURCE";
+								srcFeedTypeImg = "images/icon_web_resource.png";
+							} else if (srcFeedTypeTxt == "Live Stream") {
+								srcFeedTypeTxt = "LIVE_STREAM";
+								srcFeedTypeImg = "images/icon_satelite_black.png";
+							}
                         $("#libraryTableOnlineSources").find('tbody')
                             .append($('<tr>').attr('align', 'center')
                                 .append($('<td>')
                                     .append($('<input>').attr('type', 'hidden').attr('name', 'onlinesource_'+newID).attr('value', 'new'))
-                                    .append($('<input>').attr('type', 'hidden').attr('id', 'os_type_'+newID).attr('name', 'os_type_'+newID).attr('value', srcFeed))
+                                    .append($('<input>').attr('type', 'hidden').attr('id', 'os_type_'+newID).attr('name', 'os_type_'+newID).attr('value', srcFeedTypeTxt))
                                     .append($('<input>').attr('type', 'hidden').attr('id', 'os_url_'+newID).attr('name', 'os_url_'+newID).attr('value', sData['url']))
-                                    .append($('<input>').attr('type', 'hidden').attr('id', 'os_media_'+newID).attr('name', 'os_media_'+newID).attr('value', srcTxt))
+                                    .append($('<input>').attr('type', 'hidden').attr('id', 'os_media_'+newID).attr('name', 'os_media_'+newID).attr('value', srcMediaTypeTxt))
                                     .append($('<input>').attr('type', 'hidden').attr('id', 'os_thumb_'+newID).attr('name', 'os_thumb_'+newID).attr('value', ""))
                                     .append($('<input>').attr('type', 'hidden').attr('id', 'os_name_'+newID).attr('name', 'os_name_'+newID).attr('value', sData['name']))
                                     .append($('<input>').attr('type', 'hidden').attr('id', 'os_stat_'+newID).attr('name', 'os_stat_'+newID).attr('value', "TRUE"))
                                 )
-                                .append($('<td>')
-                                    .append($('<span>')
-                                        .html('&nbsp;New&nbsp;')
+								.append($('<td>').attr('style', 'vertical-align: top;').attr('width', '40')
+                                    .append($('<span>').attr('id', 'os_type_v_'+newID).attr('name', 'os_type_v_'+newID)
+									.append($('<img>').attr('src', srcFeedTypeImg).attr('height', "16").attr('alt', srcFeedTypeTxt))
+									.append(' '+srcFeedTypeTxt)
                                     )
                                 )
-                                .append($('<td>')
+								.append($('<td>').attr('style', 'vertical-align: top;').attr('width', '30')
+                                    .append($('<span>').attr('id', 'os_media_v_'+newID).attr('name', 'os_media_v_'+newID)
+                                        .append($('<img>').attr('src', srcMediaTypeImg).attr('height', "16").attr('alt', srcMediaTypeTxt))
+                                        .append(' '+srcMediaTypeTxt)
+                                    )
+                                )
+								.append($('<td>')
                                     .append($('<div>').attr('class', 'os_switch').attr('id', 'os_switch_'+newID).attr('name', 'os_switch_'+newID).attr('style', 'cursor: pointer;')
                                         .append($('<div>').attr('class', 'iphone_switch_container').attr('style', 'height:16px; width:56px; position: relative; overflow: hidden;')
                                             .append($('<img>')
@@ -900,26 +923,28 @@ indexes.onajaxpageload=function(pageurl) {
                                         )
                                     )
                                 )
-                                .append($('<td>').attr('align', 'left')
-                                    .append($('<span>')
-                                        .attr('id', 'os_type_v_'+newID)
-                                        .attr('name', 'os_type_v_'+newID)
-                                        .text(srcFeed)
-                                    )
-                                )
-                                .append($('<td>').attr('align', 'left')
+								.append($('<td>').attr('align', 'left')
                                     .append($('<select>')
                                         .attr('id', 'os_access_'+newID)
                                         .attr('name', 'os_access_'+newID)
                                         .append($('<option>')
                                             .attr('value', '1')
                                             .attr('selected', 'selected')
-                                            .text('Full')
+                                            .text('No Restriction')
                                         )
                                         .append($('<option>')
                                             .attr('value', '2')
-                                            .text('Limited')
+                                            .text('Limited Access')
                                         )
+                                    )
+                                )
+                                .append($('<td>')
+                                    .append($('<span>')
+                                        .html('&nbsp;New&nbsp;')
+                                    )
+                                )
+								.append($('<td>')
+                                    .append($('<span>')
                                     )
                                 )
                                 .append($('<td>').attr('align', 'left')
@@ -930,12 +955,7 @@ indexes.onajaxpageload=function(pageurl) {
                                         .text(sData['name'])
                                     )
                                 )
-                                .append($('<td>').attr('style', 'vertical-align: top;').attr('width', '30')
-                                    .append($('<span>').attr('id', 'os_media_v_'+newID).attr('name', 'os_media_v_'+newID)
-                                        .append($('<img>').attr('src', srcImg).attr('alt', srcTxt))
-                                        .append(' '+srcTxt)
-                                    )
-                                )
+                                
                             ); // end add item
 
                         }
