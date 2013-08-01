@@ -50,6 +50,9 @@ CHANGELOG:
                      - Log file can now be browsed
                      - Retrieve metadata now clickable when adding new sources
                      - Switched metadata and delivery tab
+                     - Updated display string for access levels
+					 - ServiiDroid icons are now used
+					 - Updated layout of online sources table (ServiiLink not yet working)
 
 
 HISTORY:
