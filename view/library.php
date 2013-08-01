@@ -33,9 +33,9 @@
                                 <th width="0">&nbsp;</th>
                                 <th align="left" width="400"><?php echo tr('tab_library_repository_table_folder','Folder')?></th>
                                 <th width="50"><?php echo tr('tab_library_repository_table_access','Access')?></th>
-                                <th align="center" width="30"><img src="images/film.png" alt="<?php echo tr('tab_library_repository_table_share_video','Share video files')?>" title="<?php echo tr('tab_library_repository_table_share_video','Share video files')?>"></th>
-                                <th align="center" width="30"><img src="images/music-beam.png" alt="<?php echo tr('tab_library_repository_table_share_audio','Share audio files')?>" title="<?php echo tr('tab_library_repository_table_share_audio','Share audio files')?>"></th>
-                                <th align="center" width="30"><img src="images/camera-black.png" alt="<?php echo tr('tab_library_repository_table_share_images','Share image files')?>" title="<?php echo tr('tab_library_repository_table_share_images','Share image files')?>"></th>
+                                <th align="center" width="30"><img src="images/icon_video.png" height="16" alt="<?php echo tr('tab_library_repository_table_share_video','Share video files')?>" title="<?php echo tr('tab_library_repository_table_share_video','Share video files')?>"></th>
+                                <th align="center" width="30"><img src="images/icon_music.png" height="16" alt="<?php echo tr('tab_library_repository_table_share_audio','Share audio files')?>" title="<?php echo tr('tab_library_repository_table_share_audio','Share audio files')?>"></th>
+                                <th align="center" width="30"><img src="images/icon_camera.png" height="16" alt="<?php echo tr('tab_library_repository_table_share_images','Share image files')?>" title="<?php echo tr('tab_library_repository_table_share_images','Share image files')?>"></th>
                                 <th align="center" width="30"><img src="images/document-attribute-m.png" alt="<?php echo tr('tab_library_repository_table_retrieve_descriptive_metadata','Retrieve descriptive metadata')?>" title="<?php echo tr('tab_library_repository_table_retrieve_descriptive_metadata','Retrieve descriptive metadata')?>"></th>
                                 <th align="center" width="30"><img src="images/arrow-circle.png" alt="<?php echo tr('tab_library_repository_table_scan_for_update','Scan for file additions and updates')?>" title="<?php echo tr('tab_library_repository_table_scan_for_update','Scan for file additions and updates')?>"></th>
                             </thead>
@@ -135,21 +135,31 @@
             <table>
                 <tr valign="top">
                     <td>
-                        <table width="100%" id="libraryTableOnlineSources" name="libraryTableOnlineSources">
+                        <table border="1" width="100%" id="libraryTableOnlineSources" name="libraryTableOnlineSources">
                             <thead align="center">
                                 <th width="0">&nbsp;</th>
-                                <th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_refresh','Refresh')?></th>
+								<th align="left" width="100"><?php echo tr('tab_library_online_sources_repository_table_type','Type')?></th>
+								<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_mediatype','Media Type')?></th>
+								<th align="center" width="100"><?php echo tr('tab_library_online_sources_repository_table_enabled','Enabled')?></th>
+								<th width="50"><?php echo tr('tab_library_online_sources_repository_table_access','Access')?></th>
+								<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_refresh','Refresh')?></th>
+								<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_serviiolink','ServiioLink')?></th>
+								<th align="left" width="400"><?php echo tr('tab_library_online_sources_repository_table_url','Name / URL')?></th>
+								
+								
+								
+                                <!--<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_refresh','Refresh')?></th>
                                 <th align="center" width="100"><?php echo tr('tab_library_online_sources_repository_table_enabled','Enabled')?></th>
                                 <th align="left" width="100"><?php echo tr('tab_library_online_sources_repository_table_type','Type')?></th>
                                 <th width="50"><?php echo tr('tab_library_online_sources_repository_table_access','Access')?></th>
                                 <th align="left" width="400"><?php echo tr('tab_library_online_sources_repository_table_url','Name / URL')?></th>
-                                <th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_mediatype','Media Type')?></th>
+                                <th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_mediatype','Media Type')?></th>-->
                             </thead>
                             <tbody>
                             <?php $ctr = 1; $midB = 1; foreach ($repo[1] as $id=>$entry) { if ($id>$midB) { $midB = $id; } ?>
                             <tr align="center" <?php echo $ctr%2?'':'class="odd"'?>>
                                 <td>
-                                    <input type="hidden" name="onlinesource_<?php echo $id?>" value="<?php echo $id?>">
+									<input type="hidden" name="onlinesource_<?php echo $id?>" value="<?php echo $id?>">
                                     <input type="hidden" id="os_type_<?php echo $id?>" name="os_type_<?php echo $id?>" value="<?php echo $entry[0]?>">
                                     <input type="hidden" id="os_url_<?php echo $id?>" name="os_url_<?php echo $id?>" value="<?php echo $entry[1]?>">
                                     <input type="hidden" id="os_media_<?php echo $id?>" name="os_media_<?php echo $id?>" value="<?php echo $entry[2]?>">
@@ -157,43 +167,63 @@
                                     <input type="hidden" id="os_name_<?php echo $id?>" name="os_name_<?php echo $id?>" value="<?php echo $entry[4]?>">
                                     <input type="hidden" id="os_stat_<?php echo $id?>" name="os_stat_<?php echo $id?>" value="<?php echo $entry[5]?>">
                                 </td>
-                                <td align="center" ><a style="background-color: yellow;" class="refresh-link" os_no="<?php echo $id?>" href="">&nbsp;Refresh&nbsp;</a></td>
-                                <td>
+
+								
+								
+								<td style="vertical-align: top;" width="40"><span id="os_media_v_<?php echo $id?>">
+                                    <?php if ($entry[0] == "FEED") {?>
+                                        <img src="images/icon_feed.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_feed','Feed')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_feed','Feed')?>
+                                    <?php } else if ($entry[0] == "WEB_RESOURCE") {?>
+                                        <img src="images/icon_web_resource.png" heigth="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_web_resource','Web resource')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_web_resource','Web resource')?>
+                                    <?php } else if ($entry[0] == "LIVE_STREAM") {?>
+                                        <img src="images/icon_satelite_black.png" heigth="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_live_steam','Live stream')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_live_steam','Live stream')?>
+                                    <?php } ?>
+                                </span></td>
+								<td style="vertical-align: top;" width="30"><span id="os_media_v_<?php echo $id?>">
+                                    <?php if ($entry[2] == "VIDEO") {?>
+                                        <img src="images/icon_video.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_video','Video')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_video','Video')?>
+                                    <?php } else if ($entry[2] == "AUDIO") {?>
+                                        <img src="images/icon_music.png" heigth="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_audio','Audio')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_audio','Audio')?>
+                                    <?php } else if ($entry[2] == "IMAGE") {?>
+                                        <img src="images/icon_camera.png" heigth="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_images','Image')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_images','Image')?>
+                                    <?php } ?>
+                                </span></td>
+								<td>
                                     <div class="os_switch" id="os_switch_<?php echo $id?>" style="cursor: pointer; ">
                                         <div class="iphone_switch_container" style="height:27px; width:94px; position: relative; overflow: hidden">
                                             <img class="iphone_switch" style="height: 27px; width: 94px; background-image: url(images/iphone_switch_16.png); background-position: 0px 50%; " src="images/iphone_switch_container_off.png">
                                         </div>
                                     </div>
                                 </td>
-                                <td align="left"><span id="os_type_v_<?php echo $id?>" name="os_type_v_<?php echo $id?>"><?php echo $entry[0]?></span></td>
+								<?php
+									if ($serviio->licenseEdition=="PRO") {
+										echo '<td><select name="os_access_'.$id.'">';
+										foreach ($accesses as $key=>$val) {
+											if($val=="No_Restriction") {
+												$val="No Restriction";
+											}
+											elseif($val=="Limited_Access") {
+												$val="Limited Access";
+											}
+											echo '<option value="'.$key.'"'.($key==max($entry[6])?' selected':'').'>'.$val.'</option>';
+										}
+										echo '</select></td>';
+									}
+									else {
+										echo '<td><select name="os_access_'.$id.'" disabled="disabled" title="Only enabled with PRO license">';
+										echo '<option value="1">No Restrictions</option>';
+										echo '</select></td>';
+										echo '<input type="hidden" id="os_access_'.$id.'" name="os_access_'.$id.'" value="1">';
+									}
+								?>
+								<td align="center"><a style="background-color: yellow;" class="refresh-link" os_no="<?php echo $id?>" href="">&nbsp;Refresh&nbsp;</a></td>
+								<td align="center"><img src="images/icon_serviiolink.gif" heigth="16"></td>
+								<td align="left"><span id="os_name_v_<?php echo $id?>" name="os_name_v_<?php echo $id?>" title="<?php echo $entry[1]?>"><?php echo $entry[4]==""?$entry[1]:$entry[4]?></span></td>
+								
+								
+								
+								
 
-				<?php
-					if ($serviio->licenseEdition=="PRO") {
-						echo '<td><select name="os_access_'.$id.'">';
-						foreach ($accesses as $key=>$val) {
-							echo '<option value="'.$key.'"'.($key==max($entry[6])?' selected':'').'>'.$val.'</option>';
-						}
-						echo '</select></td>';
-					}
-					else {
-						echo '<td><select name="os_access_'.$id.'" disabled="disabled" title="Only enabled with PRO license">';
-						echo '<option value="1">No_Restrictions</option>';
-						echo '</select></td>';
-						echo '<input type="hidden" id="os_access_'.$id.'" name="os_access_'.$id.'" value="1">';
-					}
-				?>
-
-                                <td align="left"><span id="os_name_v_<?php echo $id?>" name="os_name_v_<?php echo $id?>" title="<?php echo $entry[1]?>"><?php echo $entry[4]==""?$entry[1]:$entry[4]?></span></td>
-
-                                <td style="vertical-align: top;" width="30"><span id="os_media_v_<?php echo $id?>">
-                                    <?php if ($entry[2] == "VIDEO") {?>
-                                        <img src="images/film.png" alt="<?php echo tr('tab_library_online_sources_repository_table_share_video','Video')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_video','Video')?>
-                                    <?php } else if ($entry[2] == "AUDIO") {?>
-                                        <img src="images/music-beam.png" alt="<?php echo tr('tab_library_online_sources_repository_table_share_audio','Audio')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_audio','Audio')?>
-                                    <?php } else if ($entry[2] == "IMAGE") {?>
-                                        <img src="images/camera-black.png" alt="<?php echo tr('tab_library_online_sources_repository_table_share_images','Image')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_images','Image')?>
-                                    <?php } ?>
-                                </span></td>
 
                             </tr>
                             <?php $ctr += 1; ?>
