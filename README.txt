@@ -2,7 +2,7 @@ Web UI for Serviio
 Front End for Serviio
 
 Requirements: HTTP server, PHP5 (with XML simple and cURL), JavaScript-enabled web browser.
-Serviio 1.2.0 or higher required.
+Serviio 1.3.0 or higher required.
 
 TODO:
 - better error management
@@ -51,8 +51,8 @@ CHANGELOG:
                      - Retrieve metadata now clickable when adding new sources
                      - Switched metadata and delivery tab
                      - Updated display string for access levels
-					 - ServiiDroid icons are now used
-					 - Updated layout of online sources table (ServiiLink not yet working)
+                     - ServiiDroid icons are now used
+                     - Updated layout of online sources table (ServiiLink not yet working)
 
 
 HISTORY:
@@ -68,7 +68,6 @@ Like the app?  Go to www.markpemberton.com and donate a few bucks for a good cup
 
 
 TODO:
-Change images in library screens
 Optionalize the location of the Online Resources tab (either on the main tab list or where it is now)
 If adding from Online Source, check for duplicates
 sorting of OS items?
