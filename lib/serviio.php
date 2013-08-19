@@ -530,17 +530,37 @@ class ServiioService extends RestRequest
             return false;
         }
 		
-	$i = 0;
-		
-	$onlinePlugin = array();
-	foreach ($xml->onlinePlugin as $entry) {
-		$name = (string)$entry->name; // Plugin name
-		$version = (string)$entry->version; // Plugin version
-		$onlinePlugin[$i] = array($name, $version);
-		$i = $i + 1;
-	}
+		$i = 0;
+			
+		$onlinePlugin = array();
+		foreach ($xml->onlinePlugin as $entry) {
+			$name = (string)$entry->name; // Plugin name
+			$version = (string)$entry->version; // Plugin version
+			$onlinePlugin[$i] = array($name, $version);
+			$i = $i + 1;
+		}
                
         return $onlinePlugin;
+    }
+	
+	/**
+     */
+	public function getImportExport($file)
+    {
+        parent::setUrl('http://'.$this->host.':'.$this->port.'/rest/import-export/online');
+        parent::setVerb('GET');
+        parent::execute();
+        $xml = simplexml_load_string(parent::getResponseBody());
+        if ($xml===false) {
+            $this->error = "Cannot get online repository backup";
+            return false;
+        }
+		
+		$handle = fopen($file, 'w');
+		fwrite($handle, parent::getResponseBody());
+		fclose($handle);
+               
+        return print_r(parent::getResponseBody());
     }
 
     /**
