@@ -10,7 +10,7 @@
 
 <div style="border:1px solid gray; width:98%; margin-bottom: 1em; padding: 10px">
 	<div id="logs1" class="tabcontent">
-		<?php echo tr('tab_logs_file_description','The below shows the content of the Serviio generated log file. File location must be set in config.php (incl. filename).')?>
+		<?php echo tr('tab_logs_file_description','The below shows the content of the Serviio generated log file.')?>
 		<br>
 		<br>
 		<table>
