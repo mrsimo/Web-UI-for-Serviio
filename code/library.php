@@ -88,6 +88,16 @@
 			$errorCode = $serviio->putRepository($repo);
 			return $errorCode;
 		}
+		
+		/*****************************************************************/
+		/*****************************************************************/
+		elseif (getPostVar("process", "") == "export") {
+						
+			$file = getPostVar("file", "");
+			$errorCode = $serviio->getImportExport($file);
+			
+			return $errorCode;
+		}
 
 		/********************************************************/
 		echo "<xml>Failed to get proper posting value!</xml>";
