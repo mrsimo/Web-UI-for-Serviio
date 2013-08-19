@@ -124,24 +124,37 @@
 				<button type="button" id="removeOnlineSource" name="removeOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
 					<?php echo tr('button_remove','Remove')?>
 				</button>&nbsp;&nbsp;<!--" onclick="if(confirm('Are you sure you want to remove selected online source?')) { deleteLibRow('libraryTableOnlineSources'); }">-->
-				<button type="button" id="importOnlineSource" name="importOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+				<button type="button" id="importOnlineSource" name="importOnlineSource" onclick="return confirm('Import functionality not implemented yet')" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
 					<?php echo tr('button_import','Import')?>
 				</button>&nbsp;&nbsp;
-				<button type="button" id="exportOnlineSource" name="exportOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+				<button type="button" id="exportOnlineSource1" name="exportOnlineSource1" onclick="return confirm('Export functionality not implemented yet')" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
 					<?php echo tr('button_export','Export')?>
 				</button>
+				
+				<!--<form id="target">
+					<input type="file" id="file" value="Go" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">asd</input>
+				</form>
+				
+				<input type="submit" id="exportOnlineSource" name="exportOnlineSource" value="<?php echo tr('button_export','Export')?>" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">-->
+				
+				
+				
+				
+				
+				
+				
 				<br>
 			</div>
             <table>
                 <tr valign="top">
                     <td>
-                        <table border="1" width="100%" id="libraryTableOnlineSources" name="libraryTableOnlineSources">
+                        <table width="100%" id="libraryTableOnlineSources" name="libraryTableOnlineSources">
                             <thead align="center">
                                 <th width="0">&nbsp;</th>
-								<th align="left" width="100"><?php echo tr('tab_library_online_sources_repository_table_type','Type')?></th>
+								<th align="center" width="100"><?php echo tr('tab_library_online_sources_repository_table_type','Type')?></th>
 								<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_mediatype','Media Type')?></th>
 								<th align="center" width="100"><?php echo tr('tab_library_online_sources_repository_table_enabled','Enabled')?></th>
-								<th width="50"><?php echo tr('tab_library_online_sources_repository_table_access','Access')?></th>
+								<th align="center" width="50"><?php echo tr('tab_library_online_sources_repository_table_access','Access')?></th>
 								<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_refresh','Refresh')?></th>
 								<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_serviiolink','ServiioLink')?></th>
 								<th align="left" width="400"><?php echo tr('tab_library_online_sources_repository_table_url','Name / URL')?></th>
@@ -217,7 +230,7 @@
 									}
 								?>
 								<td align="center"><a style="background-color: yellow;" class="refresh-link" os_no="<?php echo $id?>" href="">&nbsp;Refresh&nbsp;</a></td>
-								<td align="center"><img src="images/icon_serviiolink.gif" heigth="16"></td>
+								<td align="center"><img src="images/icon_serviiolink.gif" heigth="16" onClick='alert("<?php echo 'serviio://'.strtolower($entry[2]).':'.strtolower($entry[0]).'?url='.$entry[1].'&name='.$entry[4]?>")'></td>
 								<td align="left"><span id="os_name_v_<?php echo $id?>" name="os_name_v_<?php echo $id?>" title="<?php echo $entry[1]?>"><?php echo $entry[4]==""?$entry[1]:$entry[4]?></span></td>
 								
 								
@@ -324,6 +337,25 @@
         </fieldset>
     </form>
 </div>
+
+
+
+
+<div id="dialog-formExport" title="<?php echo tr('dialog_select_export','Choose location to export Serviio online sources')?>">
+    <form accept-charset="utf-8">
+        <fieldset>
+            <label for="selValueExport"><?php echo tr('dialog_selected_folder','Choose location')?>:&nbsp;</label>
+            <input type="text" id="selValueExport" name="selValueExport" size="70" />
+            <div id="smallbrowserExport"></div>
+        </fieldset>
+    </form>
+</div>
+
+
+
+
+
+
 <div id="Add_OS_Item" title="<?php echo tr('dialog_add_online_source','Add Online Source')?>">
     <fieldset>
         <?php echo tr('tab_library_tab_library_new_online_source_description','Enter details of the required online source. Select the source type, enter URL of the source and pick type of media the source provides.')?>
