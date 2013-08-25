@@ -124,25 +124,12 @@
 				<button type="button" id="removeOnlineSource" name="removeOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
 					<?php echo tr('button_remove','Remove')?>
 				</button>&nbsp;&nbsp;<!--" onclick="if(confirm('Are you sure you want to remove selected online source?')) { deleteLibRow('libraryTableOnlineSources'); }">-->
-				<button type="button" id="importOnlineSource" name="importOnlineSource" onclick="return confirm('Import functionality not implemented yet')" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-					<?php echo tr('button_import','Import')?>
-				</button>&nbsp;&nbsp;
-				<button type="button" id="exportOnlineSource1" name="exportOnlineSource1" onclick="return confirm('Export functionality not implemented yet')" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+				<span id="importOnlineSource">
+					<a class="ui-button ui-widget ui-state-default ui-corner-all btn-small"><?php echo tr('button_import','Import')?></a>
+					<input type="file" name="upl" id="upl" multiple /></span>&nbsp;&nbsp;
+				<button type="button" id="exportOnlineSource" name="exportOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
 					<?php echo tr('button_export','Export')?>
 				</button>
-				
-				<!--<form id="target">
-					<input type="file" id="file" value="Go" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">asd</input>
-				</form>
-				
-				<input type="submit" id="exportOnlineSource" name="exportOnlineSource" value="<?php echo tr('button_export','Export')?>" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">-->
-				
-				
-				
-				
-				
-				
-				
 				<br>
 			</div>
             <table>
