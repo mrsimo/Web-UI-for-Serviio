@@ -545,7 +545,7 @@ class ServiioService extends RestRequest
 	
 	/**
      */
-	public function getImportExport($file)
+	public function getImportExport()
     {
         parent::setUrl('http://'.$this->host.':'.$this->port.'/rest/import-export/online');
         parent::setVerb('GET');
@@ -555,11 +555,7 @@ class ServiioService extends RestRequest
             $this->error = "Cannot get online repository backup";
             return false;
         }
-		
-		$handle = fopen($file, 'w');
-		fwrite($handle, parent::getResponseBody());
-		fclose($handle);
-               
+       
         return print_r(parent::getResponseBody());
     }
 
@@ -956,6 +952,22 @@ class ServiioService extends RestRequest
         parent::setRequestBody($xmlDoc->saveXML());
         parent::execute();
         return print_r(parent::getResponseBody());
+    }
+	
+	/**
+     */
+	public function putImportExport($backup)
+    {
+		//workaround for enabled magic quotes and whitespaces need to be trimmed
+		$backup = stripcslashes(trim($backup,"\t"));
+		
+		parent::flush();
+        parent::setUrl('http://'.$this->host.':'.$this->port.'/rest/import-export/online');
+        parent::setVerb('PUT');
+        parent::setRequestBody($backup);
+        parent::execute();
+        return print_r(parent::getResponseBody());
+		
     }
 }
 
