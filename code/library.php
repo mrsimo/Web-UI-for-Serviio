@@ -91,14 +91,36 @@
 		
 		/*****************************************************************/
 		/*****************************************************************/
-		elseif (getPostVar("process", "") == "export") {
-						
-			$file = getPostVar("file", "");
-			$errorCode = $serviio->getImportExport($file);
+		elseif (getPostVar("process", "") == "import") {
 			
+			$backup = getPostVar("backup", "");
+			$errorCode = $serviio->putImportExport($backup);
 			return $errorCode;
 		}
+		
+		/*****************************************************************/
+		/*****************************************************************/
+		elseif (getPostVar("process", "") == "export") {
+			
+			$errorCode = $serviio->getImportExport();
+			return $errorCode;
+		}
+		
+		/*****************************************************************/
+		/*****************************************************************/
+		elseif(!empty($_POST['filename']) || !empty($_POST['content'])){
+			$filename = preg_replace('/[^a-z0-9\-\_\.]/i','',$_POST['filename']);
 
+			// Outputting headers:
+			header("Cache-Control: ");
+			header("Content-type: text/plain");
+			header('Content-Disposition: attachment; filename="'.$filename.'"');
+
+			//workaround for magic quotes and ampersand needs to be decoded as encoding was submit requirement
+			echo str_replace('&amp;','&',str_replace('\\','',$_POST['content']));
+			return "";
+		}
+		
 		/********************************************************/
 		echo "<xml>Failed to get proper posting value!</xml>";
 		return "";
