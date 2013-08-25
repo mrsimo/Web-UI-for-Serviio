@@ -53,6 +53,12 @@ CHANGELOG:
                      - Updated display string for access levels
                      - ServiiDroid icons are now used
                      - Updated layout of online sources table (ServiiLink not yet working)
+- 1.5 - 08/25/2013   - Implemented and activated functionality to import/export online resources
+					 - Minor corrections and updates
+					 - Updated language files
+					 - Fixed parser errors in presentation and logs tab
+					 - Fixed variable naming in presentation tab which lead to parser error during save
+					 - ServiiLink icon click now displays ServiiLink
 
 
 HISTORY:
