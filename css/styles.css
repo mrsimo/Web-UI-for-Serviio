@@ -144,3 +144,7 @@ A:visited {
 #rendererTable tbody td {
     padding:4px;
 }
+
+#libtab2 input{
+    display:none;
+}
