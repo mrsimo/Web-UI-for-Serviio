@@ -29,6 +29,7 @@ $appInfo = $serviio->getApplication();
 
 <script src="js/jquery.min.js" type="text/javascript"></script>
 <script src="js/jquery-ui.min.js" type="text/javascript"></script>
+<script src="js/download.js" type="text/javascript"></script>
 
 <link href="js/DataTables-1.9.4/examples/examples_support/themes/smoothness/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" />
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
@@ -621,38 +622,6 @@ indexes.onajaxpageload=function(pageurl) {
                 });
                 return false;
             });
-			/*$("#exportOnlineSource").click(function(e) {
-                $("#process").val("export");
-				$("#savingMsg").text("<?php echo tr('status_message_saving','Exporting...')?>");
-                $("#savingMsg").first().show();
-                $("#debugInfo").text(parseUrl(decodeURIComponent($form.serialize())));
-                $("#debugInfoDate").text(Date());
-                e.preventDefault();
-                $.ajax({
-                    type: 'POST',
-                    url: 'code/library.php',
-                    data: 'process=export',
-                    dataType: 'xml',
-                    timeout: 10000,
-                    success: function(response) {
-                        $("#debugInfo2Date").text(Date());
-                        $("#debugInfo2").text(response);
-                        $("#debugInfo2").text(serializeXmlNode(response));
-                        if ($(response).find("errorCode").text() == 0) {
-                            $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
-                            $("#savingMsg").delay(800).fadeOut("slow");
-                        } else {
-                            $("#savingMsg").text("<?php echo tr('status_message_error_save_data','Error saving data!')?> (" + $(response).find("errorCode").text() + ")");
-                        }
-                    },
-                    error: function(xhr, textStatus, errorThrown){
-                        alert("Error: " + textStatus)
-                        $("#debugInfo2Date").text(Date());
-                        $("#debugInfo2").text(errorThrown);
-                    }
-                });
-                return false;
-            });*/
 
             $("#smallbrowser").folderTree({
                 root: '/',
@@ -1173,87 +1142,93 @@ indexes.onajaxpageload=function(pageurl) {
 				location.reload();
 				return false;
 			});
-			
-			
-			
-			
-			
-			$("#smallbrowserExport").fileTree({
-                root: '/',
-                script: 'filetree/jqueryFileTree.php',
-                loadMessage: 'My loading message...',
-                multiFolder: false
-            },function(file) {
-                $("#selValueExport").val(file);
-                fileName=file;
-                });
-				
-				
-			$("#dialog-formExport").dialog({
-				autoOpen: false,
-				height: 410,
-				width: 570,
-				modal: true,
-				buttons: {
-					"<?php echo tr('button_select_file','Select File')?>": function(file) {
-						//$("#logfile").val(fileName);
-						//$("#process").val("export");
-						$("#savingMsg").text("<?php echo tr('status_message_exporting','Exporting...')?>");
-						$("#savingMsg").first().show();
-						$("#debugInfo").text(parseUrl(decodeURIComponent('process=export&file='+fileName)));
-						$("#debugInfoDate").text(Date());
-						//e.preventDefault();
-						$.ajax({
-							type: 'POST',
-							url: 'code/library.php',
-							data: 'process=export&file='+fileName,
-							dataType: 'xml',
-							timeout: 10000,
-							success: function(response) {
-								$("#debugInfo2Date").text(Date());
-								$("#debugInfo2").text(response);
-								$("#debugInfo2").text(serializeXmlNode(response));
-								if ($(response).find("errorCode").text() == 0) {
-									$("#savingMsg").text("<?php echo tr('status_message_exported','Exported data!')?>");
-									$("#savingMsg").delay(800).fadeOut("slow");
-								} else {
+
+			$("#exportOnlineSource").click(function(e) {
+				$("#process").val("export");
+				$("#savingMsg").text("<?php echo tr('status_message_exporting','Exporting...')?>");
+				$("#savingMsg").first().show();
+				$("#debugInfo").text(parseUrl(decodeURIComponent($("#process"))));
+				$("#debugInfoDate").text(Date());
+				$.ajax({
+					type: 'POST',
+					url: 'code/library.php',
+					data: 'process=export',
+					dataType: 'xml',
+					timeout: 10000,
+					success: function(response) {
+						$("#debugInfo2Date").text(Date());
+						$("#debugInfo2").text(response);
+						$("#debugInfo2").text(serializeXmlNode(response));
+						if ($(response).find("errorCode").text() == 0) {
+							$("#savingMsg").text("<?php echo tr('status_message_exported','Data exported!')?>");
+							$("#savingMsg").delay(800).fadeOut("slow");
+							//Generate output file
+							$.generateFile({
+								filename	: 'export.soe',
+								content		: serializeXmlNode(response),
+								script		: 'code/library.php'
+							});
+							} else {
 									$("#savingMsg").text("<?php echo tr('status_message_error_export_data','Error exporting data!')?> (" + $(response).find("errorCode").text() + ")");
 								}
 							},
-							error: function(xhr, textStatus, errorThrown){
-								alert("Error: " + textStatus)
-								$("#debugInfo2Date").text(Date());
-								$("#debugInfo2").text(errorThrown);
-							}
-						});
-						//return false;
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						$(this).dialog("close");
-					},
-					<?php echo tr('button_cancel','Cancel')?>: function() {
-						$(this).dialog("close");
-					}
-				}
-			});
+                    error: function(xhr, textStatus, errorThrown){
+                        alert("Error: " + textStatus)
+                        $("#debugInfo2Date").text(Date());
+                        $("#debugInfo2").text(errorThrown);
+                    }
+                });
 
-			$("#exportOnlineSource").click(function(e) {
-				e.preventDefault();
-				$("#dialog-formExport").dialog("open");
 				return false;
 			});
 			
+			$("#importOnlineSource a").click(function() {
+				$(this).parent().find('input').click();
+				$("#upl").change( function() {
+				//get file object using fileReader API
+				var file = document.getElementById('upl').files[0];
+				if (file) {
+					// create reader
+					var reader = new FileReader();
+					reader.readAsText(file);
+					reader.onload = function(e) {
+						// browser completed reading file
+						var backupData = e.target.result;
+						$("#process").val("import");
+						$("#savingMsg").text("<?php echo tr('status_message_importing','Importing...')?>");
+						$("#savingMsg").first().show();
+						$("#debugInfo").text(parseUrl(decodeURIComponent("process=import&backup="+backupData)));
+						$("#debugInfoDate").text(Date());
+						$.ajax({
+								type: 'POST',
+								url: 'code/library.php',
+								data: 'process=import&backup='+encodeURIComponent(backupData), //encode URI backup data for POST
+								//data: 'process=import&backup='+backupData,
+								dataType: 'text',
+								timeout: 10000,
+								success: function(response) {
+									$("#debugInfo2Date").text(Date());
+									$("#debugInfo2").text(response);
+									$("#debugInfo2").text(serializeXmlNode(response));
+									if ($(response).find("errorCode").text() == 0) {
+										$("#savingMsg").text("<?php echo tr('status_message_imported','Data imported!')?>");
+										$("#savingMsg").delay(800).fadeOut("slow");
+										} else {
+												$("#savingMsg").text("<?php echo tr('status_message_error_import_data','Error importing data!')?> (" + $(response).find("errorCode").text() + ")");
+											}
+										},
+								error: function(xhr, textStatus, errorThrown){
+									alert("Error: " + textStatus)
+									$("#debugInfo2Date").text(Date());
+									$("#debugInfo2").text(errorThrown);
+								}
+						});
+					}
+				}
+				});
+				
+				return false;
+			});
         });
     }
     //-------------------------------------------------------------------------
