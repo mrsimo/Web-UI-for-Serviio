@@ -1,6 +1,6 @@
 <form method="post" action="" id="libraryform" name="library" accept-charset="utf-8">
     <input type="hidden" name="tab" value="library">
-	<input type="hidden" id="process" name="process" value="">
+    <input type="hidden" id="process" name="process" value="">
     <br>
 
     <ul id="librarytabs" class="shadetabs">
@@ -48,27 +48,27 @@
                                 </td>
                                 <td align="left"><?php echo $entry[0]?></td>
 
-				<?php
-					if ($serviio->licenseEdition=="PRO") {
-						echo '<td><select name="access_'.$id.'">';
-						foreach ($accesses as $key=>$val) {
-							if($val=="No_Restriction") {
-								$val="No Restriction";
-							}
-							elseif($val=="Limited_Access") {
-								$val="Limited Access";
-							}
-							echo '<option value="'.$key.'"'.($key==max($entry[4])?' selected':'').'>'.$val.'</option>';
-						}
-						echo '</select></td>';
-					}
-					else {
-						echo '<td><select name="access_'.$id.'" disabled="disabled" title="Only enabled with PRO license">';
-						echo '<option value="1">No_Restrictions</option>';
-						echo '</select></td>';
-						echo '<input type="hidden" id="access_'.$id.'" name="access_'.$id.'" value="1">';
-					}
-				?>
+                <?php
+                    if ($serviio->licenseEdition=="PRO") {
+                        echo '<td><select name="access_'.$id.'">';
+                        foreach ($accesses as $key=>$val) {
+                            if($val=="No_Restriction") {
+                                $val="No Restriction";
+                            }
+                            elseif($val=="Limited_Access") {
+                                $val="Limited Access";
+                            }
+                            echo '<option value="'.$key.'"'.($key==max($entry[4])?' selected':'').'>'.$val.'</option>';
+                        }
+                        echo '</select></td>';
+                    }
+                    else {
+                        echo '<td><select name="access_'.$id.'" disabled="disabled" title="Only enabled with PRO license">';
+                        echo '<option value="1">No_Restrictions</option>';
+                        echo '</select></td>';
+                        echo '<input type="hidden" id="access_'.$id.'" name="access_'.$id.'" value="1">';
+                    }
+                ?>
 
                                 <?php for ($i=0;$i<count($types);$i++) { $type = $types[$i]; ?>
                                 <td><input type="checkbox" name="<?php echo $type."_".$id?>" value="1"<?php echo array_search($type,$entry[1])===false?"":" checked"?>></td>
@@ -112,142 +112,104 @@
             <?php echo tr('tab_library_online_sources_description','Define online source that you would like to access. Online sources are constantly monitored for updates and cached for a period of time. It might take a moment for new sources to appear on your device.')?><br>
             <br>
             <div style="padding-left: 3px;">
-				<button type="button" id="add_os" name="add_os" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-					<?php echo tr('button_add','Add')?>
-				</button>&nbsp;&nbsp;
-				<button type="button" id="add_serviidb" name="add_serviidb" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-					<?php echo tr('button_add_Serviidb','Add from ServiiDB')?>
-				</button>&nbsp;&nbsp;
-				<button type="button" id="edit_os" name="edit_os" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-					<?php echo tr('button_edit','Edit')?>
-				</button>&nbsp;&nbsp;
-				<button type="button" id="removeOnlineSource" name="removeOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-					<?php echo tr('button_remove','Remove')?>
-				</button>&nbsp;&nbsp;<!--" onclick="if(confirm('Are you sure you want to remove selected online source?')) { deleteLibRow('libraryTableOnlineSources'); }">-->
-				<span id="importOnlineSource">
-					<a class="ui-button ui-widget ui-state-default ui-corner-all btn-small"><?php echo tr('button_import','Import')?></a>
-					<input type="file" name="upl" id="upl" multiple /></span>&nbsp;&nbsp;
-				<button type="button" id="exportOnlineSource" name="exportOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-					<?php echo tr('button_export','Export')?>
-				</button>
-				<br>
-			</div>
-            <table>
-                <tr valign="top">
+                <button type="button" id="add_os" name="add_os" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+                    <?php echo tr('button_add','Add')?>
+                </button>&nbsp;&nbsp;
+                <button type="button" id="add_serviidb" name="add_serviidb" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+                    <?php echo tr('button_add_Serviidb','Add from ServiiDB')?>
+                </button>&nbsp;&nbsp;
+                <button type="button" id="edit_os" name="edit_os" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+                    <?php echo tr('button_edit','Edit')?>
+                </button>&nbsp;&nbsp;
+                <button type="button" id="removeOnlineSource" name="removeOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+                    <?php echo tr('button_remove','Remove')?>
+                </button>&nbsp;&nbsp;<!--" onclick="if(confirm('Are you sure you want to remove selected online source?')) { deleteLibRow('libraryTableOnlineSources'); }">-->
+                <span id="importOnlineSource">
+                    <a class="ui-button ui-widget ui-state-default ui-corner-all btn-small"><?php echo tr('button_import','Import')?></a>
+                    <input type="file" name="upl" id="upl" multiple /></span>&nbsp;&nbsp;
+                <button type="button" id="exportOnlineSource" name="exportOnlineSource" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
+                    <?php echo tr('button_export','Export')?>
+                </button>
+                <br>
+            </div>
+            <p></p>
+            <table id="libraryTableOnlineSources" name="libraryTableOnlineSources">
+                <thead>
+                    <th><?php echo tr('tab_library_online_sources_repository_table_type','Type')?></th>
+                    <th><?php echo tr('tab_library_online_sources_repository_table_mediatype','Media Type')?></th>
+                    <th><?php echo tr('tab_library_online_sources_repository_table_enabled','Enabled')?></th>
+                    <th><?php echo tr('tab_library_online_sources_repository_table_access','Access')?></th>
+                    <th><?php echo tr('tab_library_online_sources_repository_table_refresh','Refresh')?></th>
+                    <th><?php echo tr('tab_library_online_sources_repository_table_serviiolink','ServiioLink')?></th>
+                    <th><?php echo tr('tab_library_online_sources_repository_table_url','Name / URL')?></th>
+                </thead>
+                <tbody>
+                <?php $ctr = 1; $midB = 1; foreach ($repo[1] as $id=>$entry) { if ($id>$midB) { $midB = $id; } ?>
+                <tr <?php echo $ctr%2?'':'class="odd"'?>>
+                    <td><span id="os_media_v_<?php echo $id?>">
+                        <?php if ($entry[0] == "FEED") {?>
+                            <img src="images/icon_feed.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_feed','Feed')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_feed','Feed')?>
+                        <?php } else if ($entry[0] == "WEB_RESOURCE") {?>
+                            <img src="images/icon_web_resource.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_web_resource','Web resource')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_web_resource','Web resource')?>
+                        <?php } else if ($entry[0] == "LIVE_STREAM") {?>
+                            <img src="images/icon_satelite_black.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_live_steam','Live stream')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_live_steam','Live stream')?>
+                        <?php } ?>
+                    </span></td>
+                    <td><span id="os_media_v_<?php echo $id?>">
+                        <?php if ($entry[2] == "VIDEO") {?>
+                            <img src="images/icon_video.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_video','Video')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_video','Video')?>
+                        <?php } else if ($entry[2] == "AUDIO") {?>
+                            <img src="images/icon_music.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_audio','Audio')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_audio','Audio')?>
+                        <?php } else if ($entry[2] == "IMAGE") {?>
+                            <img src="images/icon_camera.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_images','Image')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_images','Image')?>
+                        <?php } ?>
+                    </span></td>
                     <td>
-                        <table width="100%" id="libraryTableOnlineSources" name="libraryTableOnlineSources">
-                            <thead align="center">
-                                <th width="0">&nbsp;</th>
-								<th align="center" width="100"><?php echo tr('tab_library_online_sources_repository_table_type','Type')?></th>
-								<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_mediatype','Media Type')?></th>
-								<th align="center" width="100"><?php echo tr('tab_library_online_sources_repository_table_enabled','Enabled')?></th>
-								<th align="center" width="50"><?php echo tr('tab_library_online_sources_repository_table_access','Access')?></th>
-								<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_refresh','Refresh')?></th>
-								<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_serviiolink','ServiioLink')?></th>
-								<th align="left" width="400"><?php echo tr('tab_library_online_sources_repository_table_url','Name / URL')?></th>
-								
-								
-								
-                                <!--<th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_refresh','Refresh')?></th>
-                                <th align="center" width="100"><?php echo tr('tab_library_online_sources_repository_table_enabled','Enabled')?></th>
-                                <th align="left" width="100"><?php echo tr('tab_library_online_sources_repository_table_type','Type')?></th>
-                                <th width="50"><?php echo tr('tab_library_online_sources_repository_table_access','Access')?></th>
-                                <th align="left" width="400"><?php echo tr('tab_library_online_sources_repository_table_url','Name / URL')?></th>
-                                <th align="center" width="80"><?php echo tr('tab_library_online_sources_repository_table_mediatype','Media Type')?></th>-->
-                            </thead>
-                            <tbody>
-                            <?php $ctr = 1; $midB = 1; foreach ($repo[1] as $id=>$entry) { if ($id>$midB) { $midB = $id; } ?>
-                            <tr align="center" <?php echo $ctr%2?'':'class="odd"'?>>
-                                <td>
-									<input type="hidden" name="onlinesource_<?php echo $id?>" value="<?php echo $id?>">
-                                    <input type="hidden" id="os_type_<?php echo $id?>" name="os_type_<?php echo $id?>" value="<?php echo $entry[0]?>">
-                                    <input type="hidden" id="os_url_<?php echo $id?>" name="os_url_<?php echo $id?>" value="<?php echo $entry[1]?>">
-                                    <input type="hidden" id="os_media_<?php echo $id?>" name="os_media_<?php echo $id?>" value="<?php echo $entry[2]?>">
-                                    <input type="hidden" id="os_thumb_<?php echo $id?>" name="os_thumb_<?php echo $id?>" value="<?php echo $entry[3]?>">
-                                    <input type="hidden" id="os_name_<?php echo $id?>" name="os_name_<?php echo $id?>" value="<?php echo $entry[4]?>">
-                                    <input type="hidden" id="os_stat_<?php echo $id?>" name="os_stat_<?php echo $id?>" value="<?php echo $entry[5]?>">
-                                </td>
-
-								
-								
-								<td style="vertical-align: top;" width="40"><span id="os_media_v_<?php echo $id?>">
-                                    <?php if ($entry[0] == "FEED") {?>
-                                        <img src="images/icon_feed.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_feed','Feed')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_feed','Feed')?>
-                                    <?php } else if ($entry[0] == "WEB_RESOURCE") {?>
-                                        <img src="images/icon_web_resource.png" heigth="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_web_resource','Web resource')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_web_resource','Web resource')?>
-                                    <?php } else if ($entry[0] == "LIVE_STREAM") {?>
-                                        <img src="images/icon_satelite_black.png" heigth="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_live_steam','Live stream')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_live_steam','Live stream')?>
-                                    <?php } ?>
-                                </span></td>
-								<td style="vertical-align: top;" width="30"><span id="os_media_v_<?php echo $id?>">
-                                    <?php if ($entry[2] == "VIDEO") {?>
-                                        <img src="images/icon_video.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_video','Video')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_video','Video')?>
-                                    <?php } else if ($entry[2] == "AUDIO") {?>
-                                        <img src="images/icon_music.png" heigth="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_audio','Audio')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_audio','Audio')?>
-                                    <?php } else if ($entry[2] == "IMAGE") {?>
-                                        <img src="images/icon_camera.png" heigth="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_images','Image')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_images','Image')?>
-                                    <?php } ?>
-                                </span></td>
-								<td>
-                                    <div class="os_switch" id="os_switch_<?php echo $id?>" style="cursor: pointer; ">
-                                        <div class="iphone_switch_container" style="height:27px; width:94px; position: relative; overflow: hidden">
-                                            <img class="iphone_switch" style="height: 27px; width: 94px; background-image: url(images/iphone_switch_16.png); background-position: 0px 50%; " src="images/iphone_switch_container_off.png">
-                                        </div>
-                                    </div>
-                                </td>
-								<?php
-									if ($serviio->licenseEdition=="PRO") {
-										echo '<td><select name="os_access_'.$id.'">';
-										foreach ($accesses as $key=>$val) {
-											if($val=="No_Restriction") {
-												$val="No Restriction";
-											}
-											elseif($val=="Limited_Access") {
-												$val="Limited Access";
-											}
-											echo '<option value="'.$key.'"'.($key==max($entry[6])?' selected':'').'>'.$val.'</option>';
-										}
-										echo '</select></td>';
-									}
-									else {
-										echo '<td><select name="os_access_'.$id.'" disabled="disabled" title="Only enabled with PRO license">';
-										echo '<option value="1">No Restrictions</option>';
-										echo '</select></td>';
-										echo '<input type="hidden" id="os_access_'.$id.'" name="os_access_'.$id.'" value="1">';
-									}
-								?>
-								<td align="center"><a style="background-color: yellow;" class="refresh-link" os_no="<?php echo $id?>" href="">&nbsp;Refresh&nbsp;</a></td>
-								<td align="center"><img src="images/icon_serviiolink.gif" heigth="16" onClick='alert("<?php echo 'serviio://'.strtolower($entry[2]).':'.strtolower($entry[0]).'?url='.$entry[1].'&name='.$entry[4]?>")'></td>
-								<td align="left"><span id="os_name_v_<?php echo $id?>" name="os_name_v_<?php echo $id?>" title="<?php echo $entry[1]?>"><?php echo $entry[4]==""?$entry[1]:$entry[4]?></span></td>
-								
-								
-								
-								
-
-
-                            </tr>
-                            <?php $ctr += 1; ?>
-                            <?php } ?>
-                            <?php /* screen - Enter detail of online source
-                                Enter details of the required online source. Select the source type, enter URL of the
-                                source and pick type of media the source provides.
-
-                                Source type: Online RSS/Atom feed (onlineFeedType)
-                                Source URL: (textbox)             (sourceURL)
-                                Display Name: (textbox)           (repositoryName)
-                                Media type: Video / Audio / Image (mediaType)
-                                Thumbnail URL: (textbox readonly) (thumbnailURL)
-
-                                <?php for ($i=0;$i<count($types);$i++) { $type = $types[$i]; ?>
-                                <td><input type="radio" name="os_<?php echo $id?>" value="<?php echo $type?>"<?php echo $type===$entry[2]?" checked":""?>></td>
-                                <?php } ?>
-                            */?>
-                            </tbody>
-                        </table>
-                        <input type="hidden" id="lastOSId" name="lastOSId" value="<?php echo $midB?>">
+                        <div class="os_switch" id="os_switch_<?php echo $id?>" style="cursor: pointer; ">
+                            <div class="iphone_switch_container" style="height:27px; width:94px; position: relative; overflow: hidden">
+                                <img class="iphone_switch" style="height: 27px; width: 94px; background-image: url(images/iphone_switch_16.png); background-position: 0px 50%; " src="images/iphone_switch_container_off.png">
+                            </div>
+                        </div>
+                    </td>
+                    <?php
+                        if ($serviio->licenseEdition=="PRO") {
+                            echo '<td><select name="os_access_'.$id.'">';
+                            foreach ($accesses as $key=>$val) {
+                                if($val=="No_Restriction") {
+                                    $val="No Restriction";
+                                }
+                                elseif($val=="Limited_Access") {
+                                    $val="Limited Access";
+                                }
+                                echo '<option value="'.$key.'"'.($key==max($entry[6])?' selected':'').'>'.$val.'</option>';
+                            }
+                            echo '</select></td>';
+                        }
+                        else {
+                            echo '<td><select name="os_access_'.$id.'" disabled="disabled" title="Only enabled with PRO license">';
+                            echo '<option value="1">No Restrictions</option>';
+                            echo '</select></td>';
+                            echo '<input type="hidden" id="os_access_'.$id.'" name="os_access_'.$id.'" value="1">';
+                        }
+                    ?>
+                    <td><a style="background-color: yellow;" class="refresh-link" os_no="<?php echo $id?>" href="">&nbsp;Refresh&nbsp;</a></td>
+                    <td><img src="images/icon_serviiolink.gif" height="16" onClick='alert("<?php echo 'serviio://'.strtolower($entry[2]).':'.strtolower($entry[0]).'?url='.$entry[1].'&name='.$entry[4]?>")'></td>
+                    <td><span id="os_name_v_<?php echo $id?>" name="os_name_v_<?php echo $id?>" title="<?php echo $entry[1]?>"><?php echo $entry[4]==""?$entry[1]:$entry[4]?></span></td>
+                    <td>
+                        <input type="hidden" name="onlinesource_<?php echo $id?>" value="<?php echo $id?>">
+                        <input type="hidden" id="os_type_<?php echo $id?>" name="os_type_<?php echo $id?>" value="<?php echo $entry[0]?>">
+                        <input type="hidden" id="os_url_<?php echo $id?>" name="os_url_<?php echo $id?>" value="<?php echo $entry[1]?>">
+                        <input type="hidden" id="os_media_<?php echo $id?>" name="os_media_<?php echo $id?>" value="<?php echo $entry[2]?>">
+                        <input type="hidden" id="os_thumb_<?php echo $id?>" name="os_thumb_<?php echo $id?>" value="<?php echo $entry[3]?>">
+                        <input type="hidden" id="os_name_<?php echo $id?>" name="os_name_<?php echo $id?>" value="<?php echo $entry[4]?>">
+                        <input type="hidden" id="os_stat_<?php echo $id?>" name="os_stat_<?php echo $id?>" value="<?php echo $entry[5]?>">
                     </td>
                 </tr>
+                <?php $ctr += 1; ?>
+                <?php } ?>
+                </tbody>
             </table>
+            <input type="hidden" id="lastOSId" name="lastOSId" value="<?php echo $midB?>">
             <br>
             <table>
                 <tr><td>
@@ -260,9 +222,9 @@
                         <option value="30"<?php echo $serviio->maxNumberOfItemsForOnlineFeeds=="30"?" selected":""?>>30</option>
                         <option value="40"<?php echo $serviio->maxNumberOfItemsForOnlineFeeds=="40"?" selected":""?>>40</option>
                         <option value="50"<?php echo $serviio->maxNumberOfItemsForOnlineFeeds=="50"?" selected":""?>>50</option>
-						<!--<?php foreach ($maxOnlineFeeds as $key=>$val) { ?>
-							<option value="<?php echo $key?>"<?php echo $key==$serviio->maxNumberOfItemsForOnlineFeeds?" selected":""?>><?php echo $val?></option>
-						<?php } ?>-->
+                        <!--<?php foreach ($maxOnlineFeeds as $key=>$val) { ?>
+                            <option value="<?php echo $key?>"<?php echo $key==$serviio->maxNumberOfItemsForOnlineFeeds?" selected":""?>><?php echo $val?></option>
+                        <?php } ?>-->
                     </select>
                 </td></tr>
                 <tr><td>
@@ -278,8 +240,8 @@
                         <option value="MEDIUM"<?php echo $serviio->onlineContentPreferredQuality=="MEDIUM"?" selected":""?>>Medium</option>
                         <option value="HIGH"<?php echo $serviio->onlineContentPreferredQuality=="HIGH"?" selected":""?>>High</option>-->
                         <?php foreach ($onlineQuality as $key=>$val) { ?>
-							<option value="<?php echo $key?>"<?php echo $key==$serviio->onlineContentPreferredQuality?" selected":""?>><?php echo $val?></option>
-						<?php } ?>
+                            <option value="<?php echo $key?>"<?php echo $key==$serviio->onlineContentPreferredQuality?" selected":""?>><?php echo $val?></option>
+                        <?php } ?>
                     </select>
                 </td></tr>
             </table>
@@ -325,24 +287,6 @@
     </form>
 </div>
 
-
-
-
-<div id="dialog-formExport" title="<?php echo tr('dialog_select_export','Choose location to export Serviio online sources')?>">
-    <form accept-charset="utf-8">
-        <fieldset>
-            <label for="selValueExport"><?php echo tr('dialog_selected_folder','Choose location')?>:&nbsp;</label>
-            <input type="text" id="selValueExport" name="selValueExport" size="70" />
-            <div id="smallbrowserExport"></div>
-        </fieldset>
-    </form>
-</div>
-
-
-
-
-
-
 <div id="Add_OS_Item" title="<?php echo tr('dialog_add_online_source','Add Online Source')?>">
     <fieldset>
         <?php echo tr('tab_library_tab_library_new_online_source_description','Enter details of the required online source. Select the source type, enter URL of the source and pick type of media the source provides.')?>
@@ -362,8 +306,8 @@
                         <option value="LIVE_STREAM">Live Stream</option>
                         <option value="WEB_RESOURCE">Other Web Resources</option>-->
                         <?php foreach ($feedTypes as $key=>$val) { ?>
-							<option value="<?php echo $key?>"><?php echo $val?></option>
-						<?php } ?>
+                            <option value="<?php echo $key?>"><?php echo $val?></option>
+                        <?php } ?>
                     </select>
                 </td>
             </tr>
@@ -405,9 +349,9 @@
                         <!--<option value="FEED" SELECTED>Online RSS/Atom feed</option>
                         <option value="LIVE_STREAM">Live Stream</option>
                         <option value="WEB_RESOURCE">Other Web Resources</option>-->
-						<?php foreach ($feedTypes as $key=>$val) { ?>
-							<option value="<?php echo $key?>"><?php echo $val?></option>
-						<?php } ?>
+                        <?php foreach ($feedTypes as $key=>$val) { ?>
+                            <option value="<?php echo $key?>"><?php echo $val?></option>
+                        <?php } ?>
                     </select>
                 </td>
             </tr>
@@ -439,18 +383,18 @@
 <table id="t1" width="100%" class="display noblink">
 <thead>
     <tr>
-		<th><?php echo tr('tab_library_online_sources_serviidb_name','Name')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_region','Region')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_url','URL')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_mediatype','MediaType')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_resourcetype','ResourceType')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_plugin','Plugin')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_language','Language')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_nid','Nid')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_resolution','Resolution')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_quality','Quality')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_reliability','Reliability')?></th>
-		<th><?php echo tr('tab_library_online_sources_serviidb_installcount','InstallCount')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_name','Name')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_region','Region')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_url','URL')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_mediatype','MediaType')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_resourcetype','ResourceType')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_plugin','Plugin')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_language','Language')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_nid','Nid')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_resolution','Resolution')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_quality','Quality')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_reliability','Reliability')?></th>
+        <th><?php echo tr('tab_library_online_sources_serviidb_installcount','InstallCount')?></th>
     </tr>
 </thead>
 <tbody>
