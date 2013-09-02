@@ -1164,7 +1164,7 @@ indexes.onajaxpageload=function(pageurl) {
 							$("#savingMsg").delay(800).fadeOut("slow");
 							//Generate output file
 							$.generateFile({
-								filename	: 'export.soe',
+								filename	: 'export.sob',
 								content		: serializeXmlNode(response),
 								script		: 'code/library.php'
 							});
