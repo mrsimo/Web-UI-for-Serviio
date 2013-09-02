@@ -60,6 +60,10 @@ CHANGELOG:
                      - Fixed variable naming in presentation tab which lead to parser error during save
                      - ServiiLink icon click now displays ServiiLink
                      - Updated logfile cookie lifetime
+- 1.5.1 - 09/02/2013 - Changed style of online sources table to implement scrollbar
+                     - Changed file extension from .soe to .sob for online sources backup
+                     - Corrected icon size in library tab
+
 
 
 HISTORY:
