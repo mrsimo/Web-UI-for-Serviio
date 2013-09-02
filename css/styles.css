@@ -113,6 +113,17 @@ A:visited {
     background: #f6f6f6;
     text-align:left;
 }
+#libraryTableOnlineSources {
+    width: 900px;
+    }
+#libraryTableOnlineSources td:nth-child(1), #libraryTableOnlineSources th:nth-child(1) { min-width: 120px; padding:5px; }
+#libraryTableOnlineSources td:nth-child(2), #libraryTableOnlineSources th:nth-child(2) { min-width: 80px; padding:5px; }
+#libraryTableOnlineSources td:nth-child(3), #libraryTableOnlineSources th:nth-child(3) { min-width: 60px; text-align:center; padding:5px; }
+#libraryTableOnlineSources td:nth-child(4), #libraryTableOnlineSources th:nth-child(4) { min-width: 130px; text-align:center; padding:5px; }
+#libraryTableOnlineSources td:nth-child(5), #libraryTableOnlineSources th:nth-child(5) { min-width: 80px; text-align:center; padding:5px; }
+#libraryTableOnlineSources td:nth-child(6), #libraryTableOnlineSources th:nth-child(6) { min-width: 80px; text-align:center; padding:5px; }
+#libraryTableOnlineSources td:nth-child(7), #libraryTableOnlineSources th:nth-child(7) { width: 340px; padding:5px; }
+#libraryTableOnlineSources td:nth-child(8), #libraryTableOnlineSources th:nth-child(8) { width: 10px; padding:5px; }
 #PresentationAudio thead,
 #PresentationImage thead,
 #PresentationVideo thead,
@@ -126,11 +137,14 @@ A:visited {
 #PresentationAudio thead th,
 #PresentationImage thead th,
 #PresentationVideo thead th,
-#libraryTableOnlineSources thead th,
 #libraryTableFolders thead th,
 #rendererTable thead th {
     padding:5px;
 }
+#libraryTableOnlineSources thead > tr {
+      display: block;
+      position: relative;
+    }
 #PresentationAudio tr.odd,
 #PresentationImage tr.odd,
 #PresentationVideo tr.odd,
@@ -139,10 +153,17 @@ A:visited {
 #rendererTable tr.odd {
     background: #f1f1f1;
 }
-#libraryTableOnlineSources tbody td,
+#libraryTableOnlineSources tbody {
+    display: block;
+    overflow: auto;
+    width: 100%;
+    height: 200px;
+}
+/*#libraryTableOnlineSources tbody td,*/
 #libraryTableFolders tbody td,
 #rendererTable tbody td {
     padding:4px;
+    vertical-align: top;
 }
 
 #libtab2 input{
