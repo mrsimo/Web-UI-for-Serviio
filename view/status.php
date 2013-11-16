@@ -24,7 +24,7 @@
 <br>
 <table>
 <tr valign="top">
-    <td><table id="rendererTable">
+    <td><table id="rendererTable" name="rendererTable">
     <thead>
         <th width="20">&nbsp;</th>
         <th width="20">&nbsp;</th>
@@ -34,14 +34,15 @@
         <th width="50"><?php echo tr('tab_status_renderer_table_access','Access')?></th>
         <th><?php echo tr('tab_status_renderer_table_profile','Profile')?></th>
     </thead>
+    <tbody>
     <?php $ctr=1; foreach ($statusResponse["renderers"] as $id=>$renderer) { ?>
     <tr <?php echo $ctr%2?'':'class="odd"'?>>
         <td>
-            <input type="checkbox" name="chk" value="<?php echo $id?>">
             <input type="hidden" id="enabled_<?php echo $id?>" name="enabled_<?php echo $id?>" value="<?php echo $renderer[4]?>">
             <input type="hidden" name="renderer_<?php echo $id?>" value="<?php echo $id?>">
             <input type="hidden" name="name_<?php echo $id?>" value="<?php echo $renderer[1]?>">
             <input type="hidden" name="ipAddress_<?php echo $id?>" value="<?php echo $renderer[0]?>">
+            <input type="hidden" name="access_<?php echo $id?>" value="<?php echo $renderer[5]?>">
         </td>
         <td><?php echo status_icon($renderer[3])?></td>
         <td><?php echo $renderer[0]?></td>
@@ -74,6 +75,7 @@
     </tr>
     <?php $ctr+=1; ?>
     <?php } ?>
+    </tbody>
     </table>
 	
 	<br>
@@ -104,7 +106,11 @@
     <td width="100">
 <input type="submit" name="refresh" value="<?php echo tr('button_refresh','Refresh')?>" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
 <br>
-<input type="button" name="remove" value="<?php echo tr('button_remove','Remove')?>" onclick="if(confirm('<?php echo tr('status_message_remove_renderers','Are you sure you want to remove selected renderers?')?>')) { deleteProfileRow('rendererTable'); }" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
+<!--<input type="button" name="remove" value="<?php echo tr('button_remove','Remove')?>" onclick="if(confirm('<?php echo tr('status_message_remove_renderers','Are you sure you want to remove selected renderers?')?>')) { deleteProfileRow('rendererTable'); }" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />-->
+
+    <button type="button" id="remove" name="remove" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
+        <?php echo tr('button_remove','Remove')?>
+    </button>
     </td>
 </tr>
 </table>
@@ -112,7 +118,7 @@
 <!--
 var profiles = new Array();
 <?php foreach ($profiles as $key=>$val) { ?>
-profiles['<?php echo $key?>'] = '<?php echo $val?>';
+    profiles['<?php echo $key?>'] = '<?php echo $val?>';
 <?php } ?>
 // -->
 </script>
@@ -125,7 +131,6 @@ profiles['<?php echo $key?>'] = '<?php echo $val?>';
 <div style="border:1px solid gray; width:98%; margin-bottom: 1em; padding: 10px">
     <div id="netset1" class="tabcontent">
 		<?php echo tr('tab_status_bound_ip_address','Bound IP address')?>:&nbsp;
-		<!--<input type="text" name="ip" value="<?php echo $statusResponse["ip"]?>" maxlength="16">-->
 		<select name="bound_nic">
 			<?php foreach ($interfaces as $key=>$val) { ?>
 			<option value="<?php echo $key?>"<?php echo $key==$statusResponse["boundNICName"]?" selected":""?>><?php echo $val?></option>
@@ -143,3 +148,7 @@ profiles['<?php echo $key?>'] = '<?php echo $val?>';
 <input type="submit" id="submit" name="save" value="<?php echo tr('button_save','Save')?>" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
 </div>
 </form>
+
+<div id="dialog-remove-renderer" style="display: none;" title="<?php echo tr('dialog_remove_selected_renderer','Remove selected Renderer?')?>">
+    <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span><?php echo tr('dialog_remove_renderer','This will remove the selected renderer. Are you sure?')?></p>
+</div>
