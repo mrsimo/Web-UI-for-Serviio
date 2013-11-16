@@ -19,7 +19,7 @@
 						$name = $val;
 						$profile = getPostVar("profile_${uuid}", "1"); // Generic DLNA profile
 						$enabled = getPostVar("enabled_${uuid}", "");
-						$access = getPostVar("access_${uuid}", "");
+						$access = getPostVar("access_${uuid}", "1");
 						$profiles[] = array($uuid, $ipAddress, $name, $profile, $enabled, $access);
 					}
 				}
