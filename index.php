@@ -50,6 +50,9 @@ $appInfo = $serviio->getApplication();
 .library-row-highlighted {
     background-color: #CACAD4  !important;
 }
+.renderer-row-highlighted {
+    background-color: #CACAD4  !important;
+}
 </style>
 
 
@@ -243,37 +246,6 @@ function deleteLibRow(tableID) {
     }
 }
 </SCRIPT>
-<SCRIPT type="text/javascript">
-<!--
-
-function deleteProfileRow(tableID) {
-    try {
-    var table = document.getElementById(tableID);
-    var rowCount = table.rows.length;
-    var deleted = false;
-
-    for(var i=1; i<rowCount; i++) {
-        var row = table.rows[i];
-        var chkbox = row.cells[0].childNodes[1];
-        if(null != chkbox && true == chkbox.checked) {
-            table.deleteRow(i);
-            rowCount--;
-            i--;
-            deleted = true;
-        }
-    }
-    if (deleted) {
-        // OK
-    } else {
-        alert('<?php echo tr('status_message_error_remove_renderers','Please select renderers in the Rem. column')?>');
-    }
-    } catch(e) {
-        alert(e);
-    }
-}
-
-// -->
-</SCRIPT>
 </head>
 <body bgcolor="#eeeeee">
 
@@ -350,12 +322,12 @@ if ($message!="") {
     <ul id="indextabs" class="shadetabs">
         <li><a href="content.php?tab=status" rel="indexcontainer" class="selected"><?php echo tr('tab_status','Status')?></a></li>
         <li><a href="content.php?tab=library" rel="indexcontainer"><?php echo tr('tab_library','Library')?></a></li>
-		<li><a href="content.php?tab=delivery" rel="indexcontainer"><?php echo tr('tab_delivery','Delivery')?></a></li>
+	    <li><a href="content.php?tab=delivery" rel="indexcontainer"><?php echo tr('tab_delivery','Delivery')?></a></li>
         <li><a href="content.php?tab=metadata" rel="indexcontainer"><?php echo tr('tab_metadata','Metadata')?></a></li>
         <li><a href="content.php?tab=presentation" rel="indexcontainer"><?php echo tr('tab_presentation','Presentation')?></a></li>
-        <?php echo ($serviio->licenseEdition=="PRO"?'<li><a href="content.php?tab=remote" rel="indexcontainer">'.tr('tab_remote','Remote').'</a></li>':'')?>
+        <?php echo ($serviio->licenseEdition=="PRO"||$serviio->licenseType=="EVALUATION"?'<li><a href="content.php?tab=remote" rel="indexcontainer">'.tr('tab_remote','Remote').'</a></li>':'')?>
         <li><a href="content.php?tab=settings" rel="indexcontainer"><?php echo tr('tab_console_settings','Console Settings')?></a></li>
-        <li><a href="content.php?tab=logs" rel="indexcontainer"><?php echo tr('tab_logs','Logs')?></a></li>
+        <li><a href="content.php?tab=logs" rel="indexcontainer" id="logs"><?php echo tr('tab_logs','Logs')?></a></li>
         <li><a href="content.php?tab=about" rel="indexcontainer"><?php echo tr('tab_about','About')?></a></li>
     </ul>
 
@@ -504,6 +476,36 @@ indexes.onajaxpageload=function(pageurl) {
 			location.reload();
 			return false;
 		});
+        /* highlight renderer table row */
+        $("#rendererTable tbody tr").on('click', function(event) {
+            $("#rendererTable>tbody>tr").removeClass('renderer-row-highlighted');
+            $(this).addClass('renderer-row-highlighted');
+        });
+        /* remove renderer row */
+        $("#remove").click(function(e) {
+            var sel_row = "";
+            $("#rendererTable tr.renderer-row-highlighted input[name^='renderer_']").each(function() {
+                sel_row = $(this).val();
+            });
+            if (sel_row != "") {
+                $("#dialog-remove-renderer").dialog({
+                resizable: false,
+                    height: 165,
+                    modal: true,
+                    buttons: {
+                    "<?php echo tr('button_delete_renderer','Delete renderer')?>": function() {
+                        $(this).dialog("close");
+                        $("#rendererTable tr.renderer-row-highlighted").remove();
+                    },
+                    <?php echo tr('button_cancel','Cancel')?>: function() {
+                        $(this).dialog("close");
+                        }
+                    }
+                });
+                //alert('selected - '+sel_row);
+            }
+            return false;
+        });
     }
     //-------------------------------------------------------------------------
     if (pageurl.indexOf("content.php?tab=library")!=-1) {
@@ -1635,47 +1637,43 @@ indexes.onajaxpageload=function(pageurl) {
                 });
                 return false;
             });
-                        $("#reset").click(function(e) {
-                                location.reload();
-                                return false;
-                        });
+            
+        $("#reset").click(function(e) {
+            location.reload();
+            return false;
+        });
 
-
-         $("#smallbrowser1").fileTree({
-                root: '/',
-                script: 'filetree/jqueryFileTree.php',
-                loadMessage: 'My loading message...',
-                multiFolder: false
-            },function(file) {
-                //alert(file);
-                $("#selValue1").val(file);
+        $("#smallbrowser").fileTree({
+            root: '/',
+            script: 'filetree/jqueryFileTree.php',
+            loadMessage: 'My loading message...',
+            multiFolder: false },function(file) {
+                $("#selValue").val(file);
                 fileName=file;
-                });
-				
-				
-				$("#dialog-form1").dialog({
-                autoOpen: false,
-                height: 410,
-                width: 570,
-                modal: true,
-                buttons: {
-                    "<?php echo tr('button_select_folder','Select Folder')?>": function(file) {
-                        $("#logfile").val(fileName);
-                        $(this).dialog("close");
-                    },
-                    <?php echo tr('button_cancel','Cancel')?>: function() {
-                        $(this).dialog("close");
-                    }
+            });
+                    
+        $("#dialog-form").dialog({
+            autoOpen: false,
+            height: 410,
+            width: 570,
+            modal: true,
+            buttons: {
+                "<?php echo tr('button_select_file','Select File')?>": function(file) {
+                    $("#logfile").val(fileName);
+                    $(this).dialog("close");
+                },
+                <?php echo tr('button_cancel','Cancel')?>: function() {
+                    $(this).dialog("close");
                 }
-            });
+             }
+        });
 
-            $("#addLogFile").click(function(e) {
-                e.preventDefault();
-                $("#dialog-form1").dialog("open");
-                return false;
-            });
-                });
-				
+        $("#addLogFile").click(function(e) {
+            e.preventDefault();
+            $("#dialog-form").dialog("open");
+            return false;
+        });
+    });
 				
     }
     //-------------------------------------------------------------------------
@@ -1747,10 +1745,11 @@ if ($debugLoc == "screen") {
 </div>
 <?php } ?>
 
-<div align="center"><font size="1">Web UI for Serviio &copy; 2013 <a href="https://github.com/mpemberton5/Web-UI-for-Serviio">Mark Pemberton</a><br>
+<div align="center"><font size="1">Web UI for Serviio by <a href="https://github.com/SwoopX/Web-UI-for-Serviio">Sascha Eilers</a>, based on the great work of <a href="https://github.com/mpemberton5/Web-UI-for-Serviio">Mark Pemberton</a><br>
 RESTfull class &copy; <a href="http://www.gen-x-design.com/">Ian Selby</a> // 
 AJAX File Browser &copy; <a href="http://gscripts.net/free-php-scripts/Listing_Script/AJAX_File_Browser/details.html">Free PHP Scripts</a> //
 Table Sorting/Filtering &copy; <a href="http://www.javascripttoolbox.com/lib/table/source.php">Matt Kruse</a> //
+jQuery File Tree &copy; <a href="http://www.abeautifulsite.net/">A Beautiful Site, LLC</a> //
 Math.uuid.js &copy; <a href="http://www.broofa.com">Robert Kieffer</a> licensed under the MIT and GPL licenses</font></div>
 
 </body>
