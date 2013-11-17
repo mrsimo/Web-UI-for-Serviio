@@ -63,6 +63,14 @@ CHANGELOG:
 - 1.5.1 - 09/02/2013 - Changed style of online sources table to implement scrollbar
                      - Changed file extension from .soe to .sob for online sources backup
                      - Corrected icon size in library tab
+- 1.5.2 - 11/17/2013 - Status tab: Renderers are now selected by corresponding line instead of checkbox
+                     - Status tab: Fixed renderer removal in free version of Serviio
+                     - Delivery tab: Fixed display of number of used CPU cores
+                     - Logs tab: Fixed refresh button (applies for free version of Serviio)
+                     - Multilanguage updates
+                     - Library tab: Fixed erroneous access restriction behaviour
+                     - Library tab: Fixed visibility of feed expiry interval
+
 
 
 
