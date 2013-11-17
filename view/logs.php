@@ -25,7 +25,7 @@
 		
 		<div align="right">
 			<span id="savingMsg" class="savingMsg"></span>
-			<input type="submit" id="refresh" name="refresh" value="<?php echo tr('button_refresh','Refresh')?>" onclick=indexes.expandit(7) class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
+			<input type="submit" id="refresh" name="refresh" value="<?php echo tr('button_refresh','Refresh')?>" onclick=indexes.expandit('logs') class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
 			<input type="submit" id="reset" name="reset" value="<?php echo tr('button_reset','Reset')?>" onclick="return confirm('<?php echo tr('status_message_reset','Are you sure you want to reset changes?')?>')" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
         <input type="submit" id="submit" name="save" value="<?php echo tr('button_save','Save')?>" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
 			<br>
@@ -37,12 +37,12 @@
 	<li><a href="#" rel="logs2" class="selected"><?php echo tr('tab_log_content','Log file content')?></a></li>
 </ul>
 
-<div id="dialog-form1" title="<?php echo tr('dialog_select_log_file','Select Serviio log file')?>">
+<div id="dialog-form" title="<?php echo tr('dialog_select_log_file','Select Serviio log file')?>">
     <form accept-charset="utf-8">
         <fieldset>
-            <label for="selValue1"><?php echo tr('dialog_select_file','Selected file')?>:&nbsp;</label>
-            <input type="text" id="selValue1" name="selValue1" readonly="readonly" size="70" />
-            <div id="smallbrowser1"></div>
+            <label for="selValue"><?php echo tr('dialog_select_file','Selected file')?>:&nbsp;</label>
+            <input type="text" id="selValue" name="selValue" readonly="readonly" size="70" />
+            <div id="smallbrowser"></div>
         </fieldset>
     </form>
 </div>
