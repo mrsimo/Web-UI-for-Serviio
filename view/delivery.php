@@ -31,7 +31,7 @@
 		                    <td><?php echo tr('tab_delivery_transcoding_threads','Number of CPU cores to use')?>:&nbsp;</td>
 		                    <td><select name="cores">
 							<?php foreach($numberOfCPUCores as $key=>$val) {for ($i=1;$i<=$val;$i++) { ?>
-		                    <option value="<?php echo $i?>"<?php echo $i==$val?" selected":""?>><?php echo $i?></option>
+		                    <option value="<?php echo $i?>"<?php echo $serviio->threadsNumber==$i?" selected":""?>><?php echo $i?></option>
 		                    <?php }} ?>
 		                    </select></td><td>&nbsp;</td>
 		                </tr>
