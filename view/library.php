@@ -171,27 +171,29 @@
                             </div>
                         </div>
                     </td>
-                    <?php
-                        if ($serviio->licenseEdition=="PRO") {
-                            echo '<td><select name="os_access_'.$id.'">';
-                            foreach ($accesses as $key=>$val) {
-                                if($val=="No_Restriction") {
-                                    $val="No Restriction";
+                    <td>
+                        <?php
+                            if ($serviio->licenseEdition=="PRO") {
+                                echo '<select name="os_access_'.$id.'">';
+                                foreach ($accesses as $key=>$val) {
+                                    if($val=="No_Restriction") {
+                                        $val="No Restriction";
+                                    }
+                                    elseif($val=="Limited_Access") {
+                                        $val="Limited Access";
+                                    }
+                                    echo '<option value="'.$key.'"'.($key==max($entry[6])?' selected':'').'>'.$val.'</option>';
                                 }
-                                elseif($val=="Limited_Access") {
-                                    $val="Limited Access";
-                                }
-                                echo '<option value="'.$key.'"'.($key==max($entry[6])?' selected':'').'>'.$val.'</option>';
+                                echo '</select>';
                             }
-                            echo '</select></td>';
-                        }
-                        else {
-                            echo '<td><select name="os_access_'.$id.'" disabled="disabled" title="Only enabled with PRO license">';
-                            echo '<option value="1">No Restrictions</option>';
-                            echo '</select></td>';
-                            echo '<input type="hidden" id="os_access_'.$id.'" name="os_access_'.$id.'" value="1">';
-                        }
-                    ?>
+                            else {
+                                echo '<select name="os_access_'.$id.'" disabled="disabled" title="Only enabled with PRO license">';
+                                echo '<option value="1">No Restrictions</option>';
+                                echo '<input type="hidden" id="os_access_'.$id.'" name="os_access_'.$id.'" value="1">';
+                                echo '</select>';
+                            }
+                        ?>
+                    </td>
                     <td><a style="background-color: yellow;" class="refresh-link" os_no="<?php echo $id?>" href="">&nbsp;Refresh&nbsp;</a></td>
                     <td><img src="images/icon_serviiolink.gif" height="16" onClick='alert("<?php echo 'serviio://'.strtolower($entry[2]).':'.strtolower($entry[0]).'?url='.$entry[1].'&name='.$entry[4]?>")'></td>
                     <td><span id="os_name_v_<?php echo $id?>" name="os_name_v_<?php echo $id?>" title="<?php echo $entry[1]?>"><?php echo $entry[4]==""?$entry[1]:$entry[4]?></span></td>
@@ -222,9 +224,6 @@
                         <option value="30"<?php echo $serviio->maxNumberOfItemsForOnlineFeeds=="30"?" selected":""?>>30</option>
                         <option value="40"<?php echo $serviio->maxNumberOfItemsForOnlineFeeds=="40"?" selected":""?>>40</option>
                         <option value="50"<?php echo $serviio->maxNumberOfItemsForOnlineFeeds=="50"?" selected":""?>>50</option>
-                        <!--<?php foreach ($maxOnlineFeeds as $key=>$val) { ?>
-                            <option value="<?php echo $key?>"<?php echo $key==$serviio->maxNumberOfItemsForOnlineFeeds?" selected":""?>><?php echo $val?></option>
-                        <?php } ?>-->
                     </select>
                 </td></tr>
                 <tr><td>
@@ -249,23 +248,22 @@
 
 
 <div id="libtab3" class="tabcontent">
-<?php $onlinePlugin = $serviio->getPlugins(); ?>
-<table>
-                                        <tr>
-                                                <th align="left">Plugin name</th>
-                                                <th align="left">Version</th>
-                                        </tr>
-
-                                                <?php
-                                                        foreach ($onlinePlugin as $key=>$val) {
-                                                                echo '<tr>';
-                                                                echo '<td>'.$val[0].'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
-                                                                echo '<td>'.$val[1].'</td>';
-                                                                echo '</tr>';
-                                                        }
-                                                ?>
-                                </table>
-    </div>
+    <?php $onlinePlugin = $serviio->getPlugins(); ?>
+    <table>
+        <tr>
+            <th align="left">Plugin name</th>
+            <th align="left">Version</th>
+        </tr>
+        <?php
+            foreach ($onlinePlugin as $key=>$val) {
+                echo '<tr>';
+                echo '<td>'.$val[0].'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+                echo '<td>'.$val[1].'</td>';
+                echo '</tr>';
+            }
+        ?>
+    </table>
+</div>
 
 
     </div>
