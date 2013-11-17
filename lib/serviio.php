@@ -65,6 +65,7 @@ class ServiioService extends RestRequest
     public $checkForUpdates;
 
     public $licenseEdition;
+    public $licenseType;
 
     /**
      */
@@ -314,6 +315,7 @@ class ServiioService extends RestRequest
 
         // record license type as global
         $this->licenseEdition = $edition;
+        $this->licenseType = $type;
 
         return array(
                      "version"=>$currentVersion,
