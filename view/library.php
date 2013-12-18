@@ -17,73 +17,65 @@
                 <button type="button" id="addFolder" name="addFolder" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
                     <?php echo tr('button_add_local','Add local...')?>
                 </button>&nbsp;&nbsp;
-                <!--
-                <button type="button" id="addPath" name="addPath" class="ui-button ui-widget ui-state-default ui-corner-all btn-small">
-                    <?php echo tr('button_add_remote','Add path...')?>
-                </button>&nbsp;&nbsp;        onclick="addLibRow('libraryTableFolders',null)">-->
                 <button type="button" id="removeFolder" name="removeFolder" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
                     <?php echo tr('button_remove','Remove Selected')?>
-                </button> <!--onclick="if(confirm('Are you sure you want to remove selected folders')) { deleteLibRow('libraryTableFolders'); }">-->
+                </button>
+                <br>
             </div>
-            <table>
-                <tr valign="top">
-                    <td>
-                        <table width="100%" id="libraryTableFolders" name="libraryTableFolders">
-                            <thead align="center">
-                                <th width="0">&nbsp;</th>
-                                <th align="left" width="400"><?php echo tr('tab_library_repository_table_folder','Folder')?></th>
-                                <th width="50"><?php echo tr('tab_library_repository_table_access','Access')?></th>
-                                <th align="center" width="30"><img src="images/icon_video.png" height="16" alt="<?php echo tr('tab_library_repository_table_share_video','Share video files')?>" title="<?php echo tr('tab_library_repository_table_share_video','Share video files')?>"></th>
-                                <th align="center" width="30"><img src="images/icon_music.png" height="16" alt="<?php echo tr('tab_library_repository_table_share_audio','Share audio files')?>" title="<?php echo tr('tab_library_repository_table_share_audio','Share audio files')?>"></th>
-                                <th align="center" width="30"><img src="images/icon_camera.png" height="16" alt="<?php echo tr('tab_library_repository_table_share_images','Share image files')?>" title="<?php echo tr('tab_library_repository_table_share_images','Share image files')?>"></th>
-                                <th align="center" width="30"><img src="images/document-attribute-m.png" alt="<?php echo tr('tab_library_repository_table_retrieve_descriptive_metadata','Retrieve descriptive metadata')?>" title="<?php echo tr('tab_library_repository_table_retrieve_descriptive_metadata','Retrieve descriptive metadata')?>"></th>
-                                <th align="center" width="30"><img src="images/arrow-circle.png" alt="<?php echo tr('tab_library_repository_table_scan_for_update','Scan for file additions and updates')?>" title="<?php echo tr('tab_library_repository_table_scan_for_update','Scan for file additions and updates')?>"></th>
-                            </thead>
-                            <tbody>
-                            <?php $ctr = 1; $midA = 1; foreach ($repo[0] as $id=>$entry) { if ($id>$midA) { $midA = $id; } ?>
-                            <tr align="center" <?php echo $ctr%2?'':'class="odd"'?>>
+            <p></<p>
+                <table width="100%" id="libraryTableFolders" name="libraryTableFolders">
+                    <thead align="center">
+                        <th></th>
+                        <th align="left"><?php echo tr('tab_library_repository_table_folder','Folder')?></th>
+                        <th align="center"><?php echo tr('tab_library_repository_table_access','Access')?></th>
+                        <th align="center"><img src="images/icon_video.png" height="16" alt="<?php echo tr('tab_library_repository_table_share_video','Share video files')?>" title="<?php echo tr('tab_library_repository_table_share_video','Share video files')?>"></th>
+                        <th align="center"><img src="images/icon_music.png" height="16" alt="<?php echo tr('tab_library_repository_table_share_audio','Share audio files')?>" title="<?php echo tr('tab_library_repository_table_share_audio','Share audio files')?>"></th>
+                        <th align="center"><img src="images/icon_camera.png" height="16" alt="<?php echo tr('tab_library_repository_table_share_images','Share image files')?>" title="<?php echo tr('tab_library_repository_table_share_images','Share image files')?>"></th>
+                        <th align="center"><img src="images/document-attribute-m.png" alt="<?php echo tr('tab_library_repository_table_retrieve_descriptive_metadata','Retrieve descriptive metadata')?>" title="<?php echo tr('tab_library_repository_table_retrieve_descriptive_metadata','Retrieve descriptive metadata')?>"></th>
+                        <th align="center"><img src="images/arrow-circle.png" alt="<?php echo tr('tab_library_repository_table_scan_for_update','Scan for file additions and updates')?>" title="<?php echo tr('tab_library_repository_table_scan_for_update','Scan for file additions and updates')?>"></th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <?php $ctr = 1; $midA = 1; foreach ($repo[0] as $id=>$entry) { if ($id>$midA) { $midA = $id; } ?>
+                            <tr align="center" id="id_<?php echo $id?>">
+                                <td class="handle"><span class='ui-icon ui-icon-carat-2-n-s'></span></td>
+                                <td align="left"><?php echo $entry[0]?></td>
+                                <?php
+                                    if ($serviio->licenseEdition=="PRO") {
+                                        echo '<td><select name="access_'.$id.'">';
+                                        foreach ($accesses as $key=>$val) {
+                                            if($val=="No_Restriction") {
+                                                $val="No Restriction";
+                                            }
+                                            elseif($val=="Limited_Access") {
+                                                $val="Limited Access";
+                                            }
+                                            echo '<option value="'.$key.'"'.($key==max($entry[4])?' selected':'').'>'.$val.'</option>';
+                                        }
+                                        echo '</select></td>';
+                                    }
+                                    else {
+                                        echo '<td><select name="access_'.$id.'" disabled="disabled" title="Only enabled with PRO license">';
+                                        echo '<option value="1">No_Restrictions</option>';
+                                        echo '</select></td>';
+                                        echo '<input type="hidden" id="access_'.$id.'" name="access_'.$id.'" value="1">';
+                                    }
+                                ?>
+                                <?php for ($i=0;$i<count($types);$i++) { $type = $types[$i]; ?>
+                                    <td><input type="checkbox" name="<?php echo $type."_".$id?>" value="1"<?php echo array_search($type,$entry[1])===false?"":" checked"?>></td>
+                                <?php } ?>
+                                <td><input type="checkbox" name="ONLINE_<?php echo $id?>" value="1"<?php echo $entry[2]=="false"?"":" checked"?>></td>
+                                <td><input type="checkbox" name="SCAN_<?php echo $id?>" value="1"<?php echo $entry[3]=="false"?"":" checked"?>></td>
                                 <td>
                                     <input type="hidden" name="folder_<?php echo $id?>" value="<?php echo $id?>">
                                     <input type="hidden" name="name_<?php echo $id?>" value="<?php echo $entry[0]?>">
                                 </td>
-                                <td align="left"><?php echo $entry[0]?></td>
-
-                <?php
-                    if ($serviio->licenseEdition=="PRO") {
-                        echo '<td><select name="access_'.$id.'">';
-                        foreach ($accesses as $key=>$val) {
-                            if($val=="No_Restriction") {
-                                $val="No Restriction";
-                            }
-                            elseif($val=="Limited_Access") {
-                                $val="Limited Access";
-                            }
-                            echo '<option value="'.$key.'"'.($key==max($entry[4])?' selected':'').'>'.$val.'</option>';
-                        }
-                        echo '</select></td>';
-                    }
-                    else {
-                        echo '<td><select name="access_'.$id.'" disabled="disabled" title="Only enabled with PRO license">';
-                        echo '<option value="1">No_Restrictions</option>';
-                        echo '</select></td>';
-                        echo '<input type="hidden" id="access_'.$id.'" name="access_'.$id.'" value="1">';
-                    }
-                ?>
-
-                                <?php for ($i=0;$i<count($types);$i++) { $type = $types[$i]; ?>
-                                <td><input type="checkbox" name="<?php echo $type."_".$id?>" value="1"<?php echo array_search($type,$entry[1])===false?"":" checked"?>></td>
-                                <?php } ?>
-                                <td><input type="checkbox" name="ONLINE_<?php echo $id?>" value="1"<?php echo $entry[2]=="false"?"":" checked"?>></td>
-                                <td><input type="checkbox" name="SCAN_<?php echo $id?>" value="1"<?php echo $entry[3]=="false"?"":" checked"?>></td>
                             </tr>
-                            <?php $ctr += 1; ?>
-                            <?php } ?>
-                            </tbody>
-                        </table>
-                        <input type="hidden" id="lastFId" name="lastFId" value="<?php echo $midA?>">
-                    </td>
-                </tr>
-            </table>
+                        <?php $ctr += 1; ?>
+                        <?php } ?>
+                    </tbody>
+                </table>
+                <input type="hidden" id="lastFId" name="lastFId" value="<?php echo $midA?>">
             <br>
             <input type="checkbox" name="searchupdates" value="1"<?php echo $serviio->searchForUpdates=="true"?" checked":""?>> <?php echo tr('tab_library_search_for_files_updates','Search for updates of currently shared files')?>
             <br>
@@ -135,6 +127,7 @@
             <p></p>
             <table id="libraryTableOnlineSources" name="libraryTableOnlineSources">
                 <thead>
+                    <th></th>
                     <th><?php echo tr('tab_library_online_sources_repository_table_type','Type')?></th>
                     <th><?php echo tr('tab_library_online_sources_repository_table_mediatype','Media Type')?></th>
                     <th><?php echo tr('tab_library_online_sources_repository_table_enabled','Enabled')?></th>
@@ -142,10 +135,12 @@
                     <th><?php echo tr('tab_library_online_sources_repository_table_refresh','Refresh')?></th>
                     <th><?php echo tr('tab_library_online_sources_repository_table_serviiolink','ServiioLink')?></th>
                     <th><?php echo tr('tab_library_online_sources_repository_table_url','Name / URL')?></th>
+                    <th></th>
                 </thead>
                 <tbody>
                 <?php $ctr = 1; $midB = 1; foreach ($repo[1] as $id=>$entry) { if ($id>$midB) { $midB = $id; } ?>
-                <tr <?php echo $ctr%2?'':'class="odd"'?>>
+                <tr id="id_<?php echo $id?>">
+                    <td class="handle"><span class='ui-icon ui-icon-carat-2-n-s'></span></td>
                     <td><span id="os_media_v_<?php echo $id?>">
                         <?php if ($entry[0] == "FEED") {?>
                             <img src="images/icon_feed.png" height="16" alt="<?php echo tr('tab_library_online_sources_repository_table_share_feed','Feed')?>">&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_feed','Feed')?>
@@ -198,7 +193,7 @@
                     <td><img src="images/icon_serviiolink.gif" height="16" onClick='alert("<?php echo 'serviio://'.strtolower($entry[2]).':'.strtolower($entry[0]).'?url='.$entry[1].'&name='.$entry[4]?>")'></td>
                     <td><span id="os_name_v_<?php echo $id?>" name="os_name_v_<?php echo $id?>" title="<?php echo $entry[1]?>"><?php echo $entry[4]==""?$entry[1]:$entry[4]?></span></td>
                     <td>
-                        <input type="hidden" name="onlinesource_<?php echo $id?>" value="<?php echo $id?>">
+                        <input type="hidden" id="onlinesource_<?php echo $id?>" name="onlinesource_<?php echo $id?>" value="<?php echo $id?>">
                         <input type="hidden" id="os_type_<?php echo $id?>" name="os_type_<?php echo $id?>" value="<?php echo $entry[0]?>">
                         <input type="hidden" id="os_url_<?php echo $id?>" name="os_url_<?php echo $id?>" value="<?php echo $entry[1]?>">
                         <input type="hidden" id="os_media_<?php echo $id?>" name="os_media_<?php echo $id?>" value="<?php echo $entry[2]?>">
@@ -235,9 +230,6 @@
                     <?php echo tr('tab_library_online_sources_preferred_online_content_quality','Preferred online content quality')?>:&nbsp;
                 </td><td>
                     <select name="onlinequality">
-                        <!--<option value="LOW"<?php echo $serviio->onlineContentPreferredQuality=="LOW"?" selected":""?>>Low</option>
-                        <option value="MEDIUM"<?php echo $serviio->onlineContentPreferredQuality=="MEDIUM"?" selected":""?>>Medium</option>
-                        <option value="HIGH"<?php echo $serviio->onlineContentPreferredQuality=="HIGH"?" selected":""?>>High</option>-->
                         <?php foreach ($onlineQuality as $key=>$val) { ?>
                             <option value="<?php echo $key?>"<?php echo $key==$serviio->onlineContentPreferredQuality?" selected":""?>><?php echo $val?></option>
                         <?php } ?>
@@ -287,7 +279,7 @@
 
 <div id="Add_OS_Item" title="<?php echo tr('dialog_add_online_source','Add Online Source')?>">
     <fieldset>
-        <?php echo tr('tab_library_tab_library_new_online_source_description','Enter details of the required online source. Select the source type, enter URL of the source and pick type of media the source provides.')?>
+        <?php echo tr('tab_library_new_online_source_description','Enter details of the required online source. Select the source type, enter URL of the source and pick type of media the source provides.')?>
         <br>
         <br>
         <form accept-charset="utf-8">
@@ -300,9 +292,6 @@
                 <td><?php echo tr('tab_library_new_online_source_type','Source type')?>:&nbsp;</td>
                 <td>
                     <select id="newOnlineFeedType" name="newOnlineFeedType">
-                        <!--<option value="FEED" SELECTED>Online RSS/Atom feed</option>
-                        <option value="LIVE_STREAM">Live Stream</option>
-                        <option value="WEB_RESOURCE">Other Web Resources</option>-->
                         <?php foreach ($feedTypes as $key=>$val) { ?>
                             <option value="<?php echo $key?>"><?php echo $val?></option>
                         <?php } ?>
@@ -319,9 +308,9 @@
             </tr>
             <tr>
                 <td><?php echo tr('tab_library_new_online_source_media_type','Media Type')?>:&nbsp;</td>
-                <td><input type="radio" id="newMediaType" name="newMediaType" value="VIDEO" /> Video
-                    <input type="radio" id="newMediaType" name="newMediaType" value="AUDIO" /> Audio
-                    <input type="radio" id="newMediaType" name="newMediaType" value="IMAGE" /> Image
+                <td><input type="radio" id="newMediaType" name="newMediaType" value="<?php echo tr('file_type_video','Video')?>" /> <?php echo tr('file_type_video','Video')?>
+                    <input type="radio" id="newMediaType" name="newMediaType" value="<?php echo tr('file_type_audio','Audio')?>" /> <?php echo tr('file_type_audio','Audio')?>
+                    <input type="radio" id="newMediaType" name="newMediaType" value="<?php echo tr('file_type_image','Image')?>" /> <?php echo tr('file_type_image','Image')?>
                 </td>
             </tr>
             <tr>
@@ -344,9 +333,6 @@
                 <td><?php echo tr('tab_library_new_online_source_type','Source type')?>:&nbsp;</td>
                 <td>
                     <select id="editOnlineFeedType" name="editOnlineFeedType">
-                        <!--<option value="FEED" SELECTED>Online RSS/Atom feed</option>
-                        <option value="LIVE_STREAM">Live Stream</option>
-                        <option value="WEB_RESOURCE">Other Web Resources</option>-->
                         <?php foreach ($feedTypes as $key=>$val) { ?>
                             <option value="<?php echo $key?>"><?php echo $val?></option>
                         <?php } ?>
@@ -363,9 +349,9 @@
             </tr>
             <tr>
                 <td><?php echo tr('tab_library_new_online_source_media_type','Media Type')?>:&nbsp;</td>
-                <td><input type="radio" id="editMediaType" name="editMediaType" value="VIDEO" /> Video
-                    <input type="radio" id="editMediaType" name="editMediaType" value="AUDIO" /> Audio
-                    <input type="radio" id="editMediaType" name="editMediaType" value="IMAGE" /> Image
+                <td><input type="radio" id="editMediaType" name="editMediaType" value="<?php echo tr('file_type_video','Video')?>" /> <?php echo tr('file_type_video','Video')?>
+                    <input type="radio" id="editMediaType" name="editMediaType" value="<?php echo tr('file_type_audio','Audio')?>" /> <?php echo tr('file_type_audio','Audio')?>
+                    <input type="radio" id="editMediaType" name="editMediaType" value="<?php echo tr('file_type_image','Image')?>" /> <?php echo tr('file_type_image','Image')?>
                 </td>
             </tr>
             <tr>
@@ -401,6 +387,5 @@
         </form>
     </fieldset>
 </div>
-<div id="dialog-remove-library" style="display: none;" title="<?php echo tr('dialog_remove_selected_folder','Remove selected Folder?')?>">
-    <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span><?php echo tr('dialog_remove_message','This will remove the selected folder. Are you sure?')?></p>
+<div id="dialog-remove-source" style="display: none;">
 </div>
