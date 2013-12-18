@@ -17,9 +17,25 @@
     /*
     echo "<input name='uploadfile' type='file'><input type='submit' value='Upload License' readonly>";
     */
-    echo "<input id='license' name='license' type='button' value='".tr('button_upload_license','Upload New License')."' class='ui-button ui-widget ui-state-default ui-corner-all btn-small' />";
 ?>
+
+
+
+<form method="post" action="" id="licenseform" name="license" accept-charset="utf-8">
+
+<span id="uploadLicense">
+    <a class="ui-button ui-widget ui-state-default ui-corner-all btn-small"><?php echo tr('dialog_load_license','Load new license')?></a>
+    <input type="file" name="upl" id="upl" multiple />
+</span>
 <br>
+
+</form>
+
+
+        <span id="savingMsg" class="savingMsg"></span>
+
+        
+
 <br>
 <?php echo tr('tab_about_text','DLNA media streaming server<br>Copyright 2009-2013 Petr Nejedly<br>
 Web UI for Serviio maintained by Sascha Eilers<br>
@@ -33,18 +49,3 @@ This product includes software developed by the <a href="http://www.visigoths.or
 This product includes <a href="http://www.restlet.org/">Restlet</a> which is licensed under <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL v2.1</a>.<br>
 This product includes <a href="http://www.jthink.net/jaudiotagger/">Jaudiotagger</a> (an audio tagging library) which is licensed under <a href="http://www.gnu.org/copyleft/lesser.html">LGPL</a>.<br>')?>
 </div>
-<div id="license-form" title="<?php echo tr('dialog_load_license','Load New License')?>">
-    <br />
-    <form accept-charset="utf-8" method="post" enctype="multipart/form-data" action="license_ul.php" target="upload_target">
-        <fieldset>
-            <label for="uploadFile"><?php echo tr('dialog_choose_file','Choose File')?>:&nbsp;</label>
-            <input name='uploadFile' id='uploadFile' size='45' type='file' />
-            <br />
-            <input type="submit" value="<?php echo tr('dialog_import','Click to Import')?>">
-        </fieldset>
-    </form>
-    <br />
-    <div style="width: auto; height: 25px; padding: 5px; vertical-align: middle; text-align: center; font-size:20px;" id="licenseResult" name="licenseResult">asdf</div>
-    <iframe id="upload_target" name="upload_target" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-</div>
-
