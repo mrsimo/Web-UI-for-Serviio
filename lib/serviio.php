@@ -682,11 +682,10 @@ class ServiioService extends RestRequest
         parent::flush();
         parent::setUrl('http://'.$this->host.':'.$this->port.'/rest/license-upload');
         parent::setVerb('PUT');
-        parent::setRequestBody($data);
+        parent::setRequestBody(stripcslashes($data));
         parent::setContentType('Content-Type: plain/text;');
         parent::execute();
-        $x = simplexml_load_string(parent::getResponseBody());
-        return $x->errorCode;
+        return print_r(parent::getResponseBody());
     }
 
     /**
