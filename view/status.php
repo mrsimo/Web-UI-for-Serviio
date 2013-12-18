@@ -36,7 +36,7 @@
     </thead>
     <tbody>
     <?php $ctr=1; foreach ($statusResponse["renderers"] as $id=>$renderer) { ?>
-    <tr <?php echo $ctr%2?'':'class="odd"'?>>
+    <tr id="id_<?php echo $id?>" <?php echo $ctr%2?'':'class="odd"'?>>
         <td>
             <input type="hidden" id="enabled_<?php echo $id?>" name="enabled_<?php echo $id?>" value="<?php echo $renderer[4]?>">
             <input type="hidden" name="renderer_<?php echo $id?>" value="<?php echo $id?>">
@@ -150,5 +150,4 @@ var profiles = new Array();
 </form>
 
 <div id="dialog-remove-renderer" style="display: none;" title="<?php echo tr('dialog_remove_selected_renderer','Remove selected Renderer?')?>">
-    <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span><?php echo tr('dialog_remove_renderer','This will remove the selected renderer. Are you sure?')?></p>
 </div>
