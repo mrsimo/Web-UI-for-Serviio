@@ -22,6 +22,13 @@
 			$errorCode = $serviio->postAction("forceOnlineResourceRefresh", array(getPostVar("os_no", "")));
 			return $errorCode;
 		}
+        
+        /*****************************************************************/
+		/*****************************************************************/
+		elseif (getPostVar("process", "") == "checkURL") {
+			$errorCode = $serviio->postAction("checkStreamUrl", array(getPostVar("os_no", "")));
+			return $errorCode;
+		}
 
 		/*****************************************************************/
 		/*****************************************************************/
@@ -108,6 +115,7 @@
 		
 		/*****************************************************************/
 		/*****************************************************************/
+        //Required for export functionality of the library tab
 		elseif(!empty($_POST['filename']) || !empty($_POST['content'])){
 			$filename = preg_replace('/[^a-z0-9\-\_\.]/i','',$_POST['filename']);
 
@@ -117,7 +125,8 @@
 			header('Content-Disposition: attachment; filename="'.$filename.'"');
 
 			//workaround for magic quotes and ampersand needs to be decoded as encoding was submit requirement
-			echo str_replace('&amp;','&',str_replace('\\','',$_POST['content']));
+			//echo str_replace('&amp;','&',str_replace('\\','',$_POST['content']));
+			echo str_replace('\\','',$_POST['content']);
 			return "";
 		}
 		
