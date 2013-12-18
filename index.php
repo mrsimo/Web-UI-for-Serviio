@@ -47,10 +47,7 @@ $appInfo = $serviio->getApplication();
 .row-modified {
     background-color: #000 !important;
 }
-.library-row-highlighted {
-    background-color: #CACAD4  !important;
-}
-.renderer-row-highlighted {
+.ui-selected {
     background-color: #CACAD4  !important;
 }
 </style>
@@ -92,6 +89,7 @@ $appInfo = $serviio->getApplication();
         margin-bottom: 0;
     }
 </style>
+
 <script src="js/DataTables-1.9.4/extras/ColVis/media/js/ColVis.min.js" type="text/javascript"></script>
 
 
@@ -141,18 +139,12 @@ function addLibRow(tableID,path,newid) {
     var rowCount = table.rows.length;
     var row = table.insertRow(rowCount);
     row.align = 'center';
-
+    
     var cell1 = row.insertCell(0);
-    var element1 = document.createElement("input");
-    element1.type = "hidden";
-    element1.name = "folder_"+id;
-    element1.value = "new";
+    cell1.className = "handle";
+    var element1 = document.createElement("span");
+    element1.className = "ui-icon ui-icon-carat-2-n-s";
     cell1.appendChild(element1);
-    var element3 = document.createElement("input");
-    element3.type = "hidden";
-    element3.name = "name_"+id;
-    element3.value = path;
-    cell1.appendChild(element3);
 
     var cell2 = row.insertCell(1);
     var strLen = path.length;
@@ -209,6 +201,18 @@ function addLibRow(tableID,path,newid) {
     element8.value = 1;
     element8.checked = true;
     cell7.appendChild(element8);
+    
+    var cell8 = row.insertCell(8);
+    var element9 = document.createElement("input");
+    element9.type = "hidden";
+    element9.name = "folder_"+id;
+    element9.value = "new";
+    cell8.appendChild(element9);
+    var element10 = document.createElement("input");
+    element10.type = "hidden";
+    element10.name = "name_"+id;
+    element10.value = path;
+    cell8.appendChild(element10);
 
     maxFId = id;
 }
@@ -404,9 +408,13 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2").text(serializeXmlNode(response));
                         if ($(response).find("errorCode").text() == 0) {
                             $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
-                            $("#savingMsg").delay(800).fadeOut("slow");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else if ($(response).find("errorCode").text() == 500) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_status_500','Invalid IP address format!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         } else {
-                            $("#savingMsg").text("<?php echo tr('status_message_error_save_data','Error saving data!')?> (" + $(response).find("errorCode").text() + ")");
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_save_data','Error saving data!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){
@@ -476,36 +484,45 @@ indexes.onajaxpageload=function(pageurl) {
 			location.reload();
 			return false;
 		});
-        /* highlight renderer table row */
-        $("#rendererTable tbody tr").on('click', function(event) {
-            $("#rendererTable>tbody>tr").removeClass('renderer-row-highlighted');
-            $(this).addClass('renderer-row-highlighted');
-        });
-        /* remove renderer row */
-        $("#remove").click(function(e) {
-            var sel_row = "";
-            $("#rendererTable tr.renderer-row-highlighted input[name^='renderer_']").each(function() {
-                sel_row = $(this).val();
+        
+        $(function() {
+                $( "#rendererTable" ).selectable({
+                    filter: "tr",
+                    distance: 0,
+                    stop: function(){
+                        sourceId=[];
+                        sourceData=[];
+                        $( ".ui-selected", this ).each(function() {
+                            sourceId.push($(this).attr('id'));
+                            sourceData.push($(this).children("td:nth-child(3)").text() + "  -  " + $(this).children("td:nth-child(4)").text());
+                        }); 
+                    }
+                });
             });
-            if (sel_row != "") {
-                $("#dialog-remove-renderer").dialog({
-                resizable: false,
-                    height: 165,
-                    modal: true,
-                    buttons: {
+
+            $("#remove").click(function(e) {
+                $("#dialog-remove-renderer").html("<span class='ui-icon ui-icon-alert' style='float: left; margin: 0 7px 20px 0;'></span><?php echo tr('dialog_remove_renderer','This will remove the selected renderer. Are you sure?')?><br><br>" + sourceData.join("<br>"));
+                $("#dialog-remove-renderer").dialog("open");
+                return false;
+            });
+            
+            $("#dialog-remove-renderer").dialog({
+                autoOpen: false,
+                height: 300,
+                width: 420,
+                modal: true,
+                buttons: {
                     "<?php echo tr('button_delete_renderer','Delete renderer')?>": function() {
+                        $.each(sourceId, function( index, value ) {
+                            $("#"+value).remove();
+                        });
                         $(this).dialog("close");
-                        $("#rendererTable tr.renderer-row-highlighted").remove();
                     },
                     <?php echo tr('button_cancel','Cancel')?>: function() {
                         $(this).dialog("close");
                         }
-                    }
-                });
-                //alert('selected - '+sel_row);
-            }
-            return false;
-        });
+                }
+            });
     }
     //-------------------------------------------------------------------------
     if (pageurl.indexOf("content.php?tab=library")!=-1) {
@@ -517,18 +534,96 @@ indexes.onajaxpageload=function(pageurl) {
         libsTabs.setpersist(true)
         libsTabs.setselectedClassTarget("link") //"link" or "linkparent"
         libsTabs.init()
+        var sourceId=[];
+        var sourceData=[];
+        var dialogTitle="";
+        
         $(document).ready(function(){
 
-            /* highlight library table row */
-            $("#libraryTableFolders tbody tr").on('click', function(event) {
-                $("#libraryTableFolders>tbody>tr").removeClass('library-row-highlighted');
-                $(this).addClass('library-row-highlighted');
-            });
+            $( "#libraryTableOnlineSources tbody" )
+                .sortable({
+                    handle: ".handle",
+                    axis: 'y',
+                    delay: 100,
+                    stop: function(){
+                        $("#libraryTableOnlineSources tbody tr:even").removeClass("odd even").addClass("even");
+                        $("#libraryTableOnlineSources tbody tr:odd").removeClass("odd even").addClass("odd");
+                    }
+                })
+                .selectable({
+                    filter: "tr",
+                    distance: 0,
+                    cancel: "img,a,select",
+                    stop: function(){
+                        sourceId=[];
+                        sourceData=[];
+                        $( ".ui-selected", this ).each(function() {
+                            sourceId.push($(this).attr('id'));
+                            sourceData.push($(this).children("td:nth-child(8)").text() + "  -  " + $(this).children("td:nth-child(8)").children("span").attr("title"));
+                        }); 
+                    }
+                });
+                
+            $( "#libraryTableFolders tbody" )
+                .sortable({
+                    handle: ".handle",
+                    axis: 'y',
+                    delay: 100,
+                    stop: function(){
+                        $("#libraryTableFolders tbody tr:even").removeClass("odd even").addClass("even");
+                        $("#libraryTableFolders tbody tr:odd").removeClass("odd even").addClass("odd");
+                    }
+                })
+                .selectable({
+                    filter: "tr",
+                    distance: 0,
+                    cancel: "input,select",
+                    stop: function(){
+                        sourceId=[];
+                        sourceData=[];
+                        $( ".ui-selected", this ).each(function() {
+                            sourceId.push($(this).attr('id'));
+                            sourceData.push($(this).children("td:nth-child(2)").text());
+                        }); 
+                    }
+                });
+            
+            // Set odd and even class (this should be html not jQuery)
+            $("#libraryTableOnlineSources,#libraryTableFolders tbody tr:even").removeClass("odd even").addClass("even");
+            $("#libraryTableOnlineSources,#libraryTableFolders tbody tr:odd").removeClass("odd even").addClass("odd");
 
-            /* highlight online sources table row */
-            $("#libraryTableOnlineSources tbody tr").on('click', function(event) {
-                $("#libraryTableOnlineSources>tbody>tr").removeClass('library-row-highlighted');
-                $(this).addClass('library-row-highlighted');
+            $("#removeOnlineSource").click(function(e) {
+                dialogTitle="<?php echo tr('dialog_remove_os','Remove online source')?>";
+                $("#dialog-remove-source").html("<span class='ui-icon ui-icon-alert' style='float: left; margin: 0 7px 20px 0;'></span><?php echo tr('dialog_remove_os_message','This will remove the selected online sources. Are you sure?')?><br><br>" + sourceData.join("<br>"));
+                $("#dialog-remove-source").dialog('option','title',dialogTitle).dialog("open");
+                return false;
+            });
+            
+            $("#removeFolder").click(function(e) {
+                dialogTitle="<?php echo tr('dialog_remove_folder','Remove folder')?>";
+                $("#dialog-remove-source").html("<span class='ui-icon ui-icon-alert' style='float: left; margin: 0 7px 20px 0;'></span><?php echo tr('dialog_remove_folder_message','This will remove the selected folder. Are you sure?')?><br><br>" + sourceData.join("<br>"));
+                $("#dialog-remove-source").dialog('option','title',dialogTitle).dialog("open");
+                return false;
+            });
+                
+                
+            $("#dialog-remove-source").dialog({
+                autoOpen: false,
+                height: 300,
+                width: 420,
+                modal: true,
+                title: dialogTitle,
+                buttons: {
+                    "<?php echo tr('button_delete_source','Delete source(s)')?>": function() {
+                        $.each(sourceId, function( index, value ) {
+                            $("#"+value).remove();
+                        });
+                        $(this).dialog("close");
+                    },
+                    <?php echo tr('button_cancel','Cancel')?>: function() {
+                        $(this).dialog("close");
+                        }
+                }
             });
 
             /* on-off switch for Online Sources */
@@ -579,9 +674,10 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2").text(serializeXmlNode(response));
                         if ($(response).find("errorCode").text() == 0) {
                             $("#savingMsg").text("<?php echo tr('status_message_started','Started!')?>");
-                            $("#savingMsg").delay(800).fadeOut("slow");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         } else {
-                            $("#savingMsg").text("<?php echo tr('status_message_error_rescan','Error starting rescan!')?> (" + $(response).find("errorCode").text() + ")");
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_rescan','Error starting rescan!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){
@@ -611,9 +707,13 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2").text(serializeXmlNode(response));
                         if ($(response).find("errorCode").text() == 0) {
                             $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
-                            $("#savingMsg").delay(800).fadeOut("slow");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else if ($(response).find("errorCode").text() == 503) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_library_503','Invalid online resource URL!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         } else {
-                            $("#savingMsg").text("<?php echo tr('status_message_error_save_data','Error saving data!')?> (" + $(response).find("errorCode").text() + ")");
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_save_data','Error saving data!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){
@@ -662,59 +762,6 @@ indexes.onajaxpageload=function(pageurl) {
                 return false;
             });
 
-            /* remove library folder row */
-            $("#removeFolder").click(function(e) {
-                var sel_row = 0;
-                $("#libraryTableFolders tr.library-row-highlighted input[name^='folder_']").each(function() {
-                    sel_row = $(this).val();
-                });
-                if (sel_row > 0) {
-                     $("#dialog-remove-library").dialog({
-                         resizable: false,
-                         height: 165,
-                         modal: true,
-                         buttons: {
-                         "<?php echo tr('button_delete_folder','Delete Folder')?>": function() {
-                             $(this).dialog("close");
-                             $("#libraryTableFolders tr.library-row-highlighted").remove();
-                         },
-                         <?php echo tr('button_cancel','Cancel')?>: function() {
-                             $(this).dialog("close");
-                             }
-                         }
-                     });
-                    //alert('selected - '+sel_row);
-                }
-                return false;
-            });
-
-            /* remove online source row */
-            $("#removeOnlineSource").click(function(e) {
-                var sel_row = 0;
-                $("#libraryTableOnlineSources tr.library-row-highlighted input[name^='onlinesource_']").each(function() {
-                    sel_row = $(this).val();
-                });
-                if (sel_row > 0) {
-                     $("#dialog-remove-library").dialog({
-                         resizable: false,
-                         height: 165,
-                         width: 420,
-                         modal: true,
-                         buttons: {
-                         "<?php echo tr('button_delete_online_source','Delete Online Source')?>": function() {
-                             $(this).dialog("close");
-                             $("#libraryTableOnlineSources tr.library-row-highlighted").remove();
-                         },
-                         <?php echo tr('button_cancel','Cancel')?>: function() {
-                             $(this).dialog("close");
-                             }
-                         }
-                     });
-                    //alert('selected - '+sel_row);
-                }
-                return false;
-            });
-
             $("#Add_OS_Item").dialog({
                 autoOpen: false,
                 height: 350,
@@ -745,6 +792,10 @@ indexes.onajaxpageload=function(pageurl) {
                         }
                         $("#libraryTableOnlineSources").find('tbody')
                             .append($('<tr>')
+                                .append($('<td>').attr('style', 'vertical-align: top;').attr('class', 'handle')
+                                    .append($('<span>').attr('class', 'ui-icon ui-icon-carat-2-n-s')
+                                    )
+                                )
                                 .append($('<td>').attr('style', 'vertical-align: top;')
                                     .append($('<span>').attr('id', 'os_type_v_'+newID).attr('name', 'os_type_v_'+newID)
 										.append($('<img>').attr('src', srcFeedTypeImg).attr('height', "16").attr('alt', srcFeedTypeTxt))
@@ -894,7 +945,11 @@ indexes.onajaxpageload=function(pageurl) {
 							}
                         $("#libraryTableOnlineSources").find('tbody')
                             .append($('<tr>')
-								.append($('<td>').attr('style', 'vertical-align: top;')
+								.append($('<td>').attr('style', 'vertical-align: top;').attr('class', 'handle')
+                                    .append($('<span>').attr('class', 'ui-icon ui-icon-carat-2-n-s')
+                                    )
+                                )
+                                .append($('<td>').attr('style', 'vertical-align: top;')
                                     .append($('<span>').attr('id', 'os_type_v_'+newID).attr('name', 'os_type_v_'+newID)
 									.append($('<img>').attr('src', srcFeedTypeImg).attr('height', "16").attr('alt', srcFeedTypeTxt))
 									.append(' '+srcFeedTypeTxt)
@@ -1047,19 +1102,21 @@ indexes.onajaxpageload=function(pageurl) {
                         var mType = $('input:radio[name=editMediaType]:checked').val();
                         var mRes = "";
                         if (mType == "VIDEO") {
-                            mRes = "<img src='images/film.png' alt='Video'>&nbsp;Video";
+                            mRes = "<img src='images/film.png' alt='<?php echo tr('file_type_video','Video')?>'>&nbsp;<?php echo tr('file_type_video','Video')?>";
                         } else if (mType == "AUDIO") {
-                            mRes = "<img src='images/music-beam.png' alt='Audio'>&nbsp;Audio";
+                            mRes = "<img src='images/music-beam.png' alt='<?php echo tr('file_type_audio','Audio')?>'>&nbsp;<?php echo tr('file_type_audio','Audio')?>";
                         } else if (mType == "IMAGE") {
-                            mRes = "<img src='images/camera-black.png' alt='Image'>&nbsp;Image";
+                            mRes = "<img src='images/camera-black.png' alt='<?php echo tr('file_type_image','Image')?>'>&nbsp;<?php echo tr('file_type_image','Image')?>";
                         }
                         $("#os_media_v_"+osID).html(mRes);
                         $("#os_media_"+osID).val(mType);
                         // now close the form
                         $(this).dialog("close");
+                        return false;
                     },
                     <?php echo tr('button_cancel','Cancel')?>: function() {
                         $(this).dialog("close");
+                        return false;
                     }
                 }
             });
@@ -1067,14 +1124,17 @@ indexes.onajaxpageload=function(pageurl) {
             /* edit the selected Online Source */
             $("#edit_os").click(function(e) {
                 e.preventDefault();
-
-                var sel_row = 0;
-                $("#libraryTableOnlineSources tr.library-row-highlighted input[name^='onlinesource_']").each(function() {
-                    sel_row = $(this).val();
+                
+                var sel_row = [];
+                $("#libraryTableOnlineSources tr.ui-selected input[name^='onlinesource_']").each(function() {
+                    sel_row.push($(this).val());
                 });
 
-                if (sel_row == 0) {
-                    alert("<?php echo tr('status_message_item_selection','No Item Selected')?>");
+                if (sel_row.length == 0) {
+                    alert("<?php echo tr('status_message_no_item_selection','No Item Selected')?>");
+                    return false;
+                } else if (sel_row.length > 1) {
+                    alert("<?php echo tr('status_message_multiple_item_selection','More than one item selected')?>");
                     return false;
                 }
 
@@ -1127,9 +1187,13 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2").text(serializeXmlNode(response));
                         if ($(response).find("errorCode").text() == 0) {
                             $("#savingMsg").text("<?php echo tr('status_message_started','Started!')?>");
-                            $("#savingMsg").delay(800).fadeOut("slow");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else if ($(response).find("errorCode").text() == 700) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_library_700','Invalid parameter!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         } else {
-                            $("#savingMsg").text("<?php echo tr('status_message_error_rescan','Error starting rescan!')?> (" + $(response).find("errorCode").text() + ")");
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_rescan','Error starting rescan!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){
@@ -1144,6 +1208,19 @@ indexes.onajaxpageload=function(pageurl) {
 				location.reload();
 				return false;
 			});
+            
+            function curDate() {
+                var d = new Date();
+                
+                var formattedDate = [d.getDate(), d.getMonth() + 1, d.getFullYear(), d.getHours(), d.getMinutes(), d.getSeconds()];
+                $.each(formattedDate, function (key, val) {
+                    if (val.toString().length == 1) {
+                        formattedDate.splice(key, 1, "0" + val);
+                    }
+                });
+                
+                return formattedDate[2] + "-" + formattedDate[1] + "-" + formattedDate[0] + "-" + formattedDate[3] + "-" + formattedDate[4] + "-" + formattedDate[5];
+            };
 
 			$("#exportOnlineSource").click(function(e) {
 				$("#process").val("export");
@@ -1159,21 +1236,22 @@ indexes.onajaxpageload=function(pageurl) {
 					timeout: 10000,
 					success: function(response) {
 						$("#debugInfo2Date").text(Date());
-						$("#debugInfo2").text(response);
+						//$("#debugInfo2").text(response);
 						$("#debugInfo2").text(serializeXmlNode(response));
 						if ($(response).find("errorCode").text() == 0) {
 							$("#savingMsg").text("<?php echo tr('status_message_exported','Data exported!')?>");
-							$("#savingMsg").delay(800).fadeOut("slow");
+							$("#savingMsg").delay(2000).fadeOut("slow");
 							//Generate output file
 							$.generateFile({
-								filename	: 'export.sob',
+								filename	: 'serviio-online-backup_' + curDate() + '.sob',
 								content		: serializeXmlNode(response),
 								script		: 'code/library.php'
 							});
-							} else {
-									$("#savingMsg").text("<?php echo tr('status_message_error_export_data','Error exporting data!')?> (" + $(response).find("errorCode").text() + ")");
-								}
-							},
+						} else {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_export_data','Error exporting data!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+						}
+					},
                     error: function(xhr, textStatus, errorThrown){
                         alert("Error: " + textStatus)
                         $("#debugInfo2Date").text(Date());
@@ -1206,19 +1284,27 @@ indexes.onajaxpageload=function(pageurl) {
 								url: 'code/library.php',
 								data: 'process=import&backup='+encodeURIComponent(backupData), //encode URI backup data for POST
 								//data: 'process=import&backup='+backupData,
-								dataType: 'text',
+								//dataType: 'text',
+                                dataType: 'xml',
 								timeout: 10000,
 								success: function(response) {
 									$("#debugInfo2Date").text(Date());
-									$("#debugInfo2").text(response);
+									//$("#debugInfo2").text(response);
 									$("#debugInfo2").text(serializeXmlNode(response));
 									if ($(response).find("errorCode").text() == 0) {
 										$("#savingMsg").text("<?php echo tr('status_message_imported','Data imported!')?>");
-										$("#savingMsg").delay(800).fadeOut("slow");
-										} else {
-												$("#savingMsg").text("<?php echo tr('status_message_error_import_data','Error importing data!')?> (" + $(response).find("errorCode").text() + ")");
-											}
-										},
+										$("#savingMsg").delay(2000).fadeOut("slow");
+									} else if ($(response).find("errorCode").text() == 503) {
+                                        $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_importexport_503','Some ServiioLink in the file is invalid (not properly formatted)!')?>");
+                                        $("#savingMsg").delay(2000).fadeOut("slow");
+                                    } else if ($(response).find("errorCode").text() == 505) {
+                                        $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_importexport_505','The file is corrupted and/or has invalid format!')?>");
+                                        $("#savingMsg").delay(2000).fadeOut("slow");
+                                    } else {
+                                        $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_import_data','Error importing data!')?>");
+                                        $("#savingMsg").delay(2000).fadeOut("slow");
+									}
+								},
 								error: function(xhr, textStatus, errorThrown){
 									alert("Error: " + textStatus)
 									$("#debugInfo2Date").text(Date());
@@ -1262,9 +1348,10 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2").text(serializeXmlNode(response));
                         if ($(response).find("errorCode").text() == 0) {
                             $("#savingMsg").text("<?php echo tr('status_message_started','Started!')?>");
-                            $("#savingMsg").delay(800).fadeOut("slow");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         } else {
-                            $("#savingMsg").text("<?php echo tr('status_message_error_rescan','Error starting rescan!')?> (" + $(response).find("errorCode").text() + ")");
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_rescan','Error starting rescan!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){
@@ -1293,9 +1380,13 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2").text(serializeXmlNode(response));
                         if ($(response).find("errorCode").text() == 0) {
                             $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
-                            $("#savingMsg").delay(800).fadeOut("slow");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else if ($(response).find("errorCode").text() == 500) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_metadata_500','Unknown server error!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         } else {
-                            $("#savingMsg").text("<?php echo tr('status_message_error_save_data','Error saving data!')?> (" + $(response).find("errorCode").text() + ")");
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_save_data','Error saving data!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){
@@ -1351,9 +1442,13 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2").text(serializeXmlNode(response));
                         if ($(response).find("errorCode").text() == 0) {
                             $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
-                            $("#savingMsg").delay(800).fadeOut("slow");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else if ($(response).find("errorCode").text() == 501) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_delivery_501','Transcoding folder doesn\'t exist or cannot be written to!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         } else {
-                            $("#savingMsg").text("<?php echo tr('status_message_error_save_data','Error saving data!')?> (" + $(response).find("errorCode").text() + ")");
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_save_data','Error saving data!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){
@@ -1430,11 +1525,15 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2").text(serializeXmlNode(response));
                         if ($(response).find("errorCode").text() == 0) {
                             $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
-                            $("#savingMsg").delay(800).fadeOut("slow");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                             /* refresh in case language was changed */
                             location.reload();
+                        } else if ($(response).find("errorCode").text() == 500) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_presentation_500','Unknown server error!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         } else {
-                            $("#savingMsg").text("<?php echo tr('status_message_error_save_data','Error saving data!')?> (" + $(response).find("errorCode").text() + ")");
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_save_data','Error saving data!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){
@@ -1490,10 +1589,20 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2").text(serializeXmlNode(response));
                         if ($(response).find("errorCode").text() == 0) {
                             $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
-                            $("#savingMsg").delay(800).fadeOut("slow");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else if ($(response).find("errorCode").text() == 503) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_remote_503','Provided externalAddress is not a valid domain name or IP address!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else if ($(response).find("errorCode").text() == 504) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_remote_504','Provided remoteUserPassword is empty!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else if ($(response).find("errorCode").text() == 554) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_remote_554','Invalid edition of Serviio, functionality not available for this edition!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         } else {
                             //$("#savingMsg").text("Error saving data! (" + $(response).find("parameter").text() + ")");
-                            $("#savingMsg").text("<?php echo tr('status_message_error_save_data','Error saving data!')?> (" + $(response).find("errorCode").text() + ")");
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_save_data','Error saving data!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){
@@ -1523,9 +1632,16 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2").text(serializeXmlNode(response));
                         if ($(response).find("errorCode").text() == 0) {
                             $("#savingMsg").text("Available!");
-                            $("#savingMsg").delay(800).fadeOut("slow");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else if ($(response).find("errorCode").text() == 604) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_remote_604','CDS port is not accessible externally!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else if ($(response).find("errorCode").text() == 605) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_remote_605','CDS port mapping status could not be determined!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         } else {
-                            $("#savingMsg").text("<?php echo tr('status_message_error_check_port_mapping','Connection error!')?> (" + $(response).find("errorCode").text() + ")");
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_check_port_mapping','Connection error!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){
@@ -1570,10 +1686,18 @@ indexes.onajaxpageload=function(pageurl) {
                     success: function(response) {
                         $("#debugInfo2Date").text(Date());
                         $("#debugInfo2").text(serializeXmlNode(response));
-                        $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
-                        $("#savingMsg").delay(800).fadeOut("slow");
-						/* refresh in case language was changed */
-						location.reload();
+                        if ($(response).find("errorCode").text() == 0) {
+                            $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                            /* refresh in case language was changed */
+                            location.reload();
+                        } else if ($(response).find("errorCode").text() == 500) {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_settings_500','Unknown server error!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        } else {
+                            $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_save_data','Error saving data!')?>");
+                            $("#savingMsg").delay(2000).fadeOut("slow");
+                        }
                     },
                     error: function(xhr, textStatus, errorThrown){
                         alert("Error: " + textStatus)
@@ -1625,9 +1749,9 @@ indexes.onajaxpageload=function(pageurl) {
                         $("#debugInfo2Date").text(Date());
                         //$("#debugInfo2").text(serializeXmlNode(response));
                         $("#savingMsg").text("<?php echo tr('status_message_saved','Saved!')?>");
-                        $("#savingMsg").delay(800).fadeOut("slow");
-                                                /* refresh in case language was changed */
-                                                location.reload();
+                        $("#savingMsg").delay(2000).fadeOut("slow");
+                        /* refresh to show log file data */
+                        location.reload();
                     },
                     error: function(xhr, textStatus, errorThrown){
                         alert("Error: " + textStatus)
@@ -1679,42 +1803,64 @@ indexes.onajaxpageload=function(pageurl) {
     //-------------------------------------------------------------------------
     if (pageurl.indexOf("content.php?tab=about")!=-1) {
 
-        $("#license-form").dialog({
-            autoOpen: false,
-            height: 265,
-            width: 500,
-            modal: true,
-            buttons: {
-                <?php echo tr('button_close','Close')?>: function() {
-                    $(this).dialog("close");
-                    location.reload();
-                }
-            }
-        });
-
-        $(document).ready(function(){
-            $("#licenseResult").text("");
-            $("#debugInfo").text("");
-            $("#debugInfoDate").text("");
-            $("#debugInfo2").text("");
-            $("#debugInfo2Date").text("");
-            $("#license").click(function(e) {
-                // load form to upload new license key
-                e.preventDefault();
-                $("#license-form").dialog("open");
-
-                $("#upload_target").load(function () {
-                    result = $("#upload_target").contents().find("body").html();
-                    if (result == "0") {
-                        $("#licenseResult").text("<?php echo tr('status_message_import_license','Successfully Imported License!')?>");
-                    } else {
-                        $("#licenseResult").text("Error: <?php echo tr('status_message_error_import_license','Invalid License!')?>");
-                    }
-                });
-                return false;
+    $(document).ready(function(){
+        $("#uploadLicense a").click(function() {
+				$(this).parent().find('input').click();
+				$("#upl").change( function() {
+				//get file object using fileReader API
+				var file = document.getElementById('upl').files[0];
+				if (file) {
+					// create reader
+					var reader = new FileReader();
+					reader.readAsText(file);
+					reader.onload = function(e) {
+						// browser completed reading file
+						var license = e.target.result;
+						$("#process").val("upload");
+						$("#savingMsg").text("<?php echo tr('status_message_importin','Uploading...')?>");
+						$("#savingMsg").first().show();
+						$("#debugInfo").text(parseUrl(decodeURIComponent("process=upload&licenseData="+license)));
+						$("#debugInfoDate").text(Date());
+						$.ajax({
+								type: 'POST',
+								url: 'code/about.php',
+								data: 'process=upload&filename='+file.name+'&licenseData='+encodeURIComponent(license), //encode URI backup data for POST
+								//data: 'process=upload&licenseData='+license,
+								dataType: 'xml',
+								timeout: 10000,
+								success: function(response) {
+									$("#debugInfo2Date").text(Date());
+									$("#debugInfo2").text(response);
+									$("#debugInfo2").text(serializeXmlNode(response));
+									if ($(response).find("errorCode").text() == 0) {
+										$("#savingMsg").text("<?php echo tr('status_message_imported','License uploaded successfully!')?>");
+										$("#savingMsg").delay(2000).fadeOut("slow");
+									} else if ($(response).find("errorCode").text() == 555) {
+                                        $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_license_555','License is invalid!')?>");
+                                        $("#savingMsg").delay(2000).fadeOut("slow");
+                                    } else if ($(response).find("errorCode").text() == 560) {
+                                        $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('error_license_560','Uploaded file does not appear to be a license file!')?>");
+                                        $("#savingMsg").delay(2000).fadeOut("slow");
+                                    } else {
+                                        $("#savingMsg").text("Error " + $(response).find("errorCode").text() + ": <?php echo tr('status_message_error_import_data','Unknown error!')?>");
+                                        $("#savingMsg").delay(2000).fadeOut("slow");
+									}
+								},
+								error: function(xhr, textStatus, errorThrown){
+									alert("Error: " + textStatus)
+									$("#debugInfo2Date").text(Date());
+									$("#debugInfo2").text(errorThrown+response);
+								}
+						});
+					}
+				}
             });
-        });
-    }
+        return false;
+		});
+    });
+}
+
+
     //-------------------------------------------------------------------------
 }
 </script>
