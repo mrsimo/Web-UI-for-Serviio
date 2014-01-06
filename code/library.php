@@ -26,7 +26,7 @@
         /*****************************************************************/
 		/*****************************************************************/
 		elseif (getPostVar("process", "") == "checkURL") {
-			$errorCode = $serviio->postAction("checkStreamUrl", array(getPostVar("os_no", "")));
+			$errorCode = $serviio->postAction("checkStreamUrl", array(getPostVar("MediaType", ""), getPostVar("SourceURL", "")));
 			return $errorCode;
 		}
 
@@ -101,8 +101,9 @@
 		elseif (getPostVar("process", "") == "import") {
 			
 			$backup = getPostVar("backup", "");
-			$errorCode = $serviio->putImportExport($backup);
-			return $errorCode;
+            $serviio->putImportExport($backup);
+            return;
+
 		}
 		
 		/*****************************************************************/
@@ -145,6 +146,7 @@
 			$serviidb = new ServiidbService($serviidb_url);
 			$tst = $serviidb->getVideo();
 			echo $tst;
+            return;
 		}
 	}
 	
