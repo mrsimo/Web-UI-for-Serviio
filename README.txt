@@ -5,7 +5,6 @@ Requirements: HTTP server, PHP5 (with XML simple and cURL), JavaScript-enabled w
 Serviio 1.3.0 or higher required.
 
 TODO:
-- better error management
 - maybe some controls (start/stop) of the status refreshes
 - better notification of when new version of Web UI and Serviio exist
 
@@ -70,23 +69,26 @@ CHANGELOG:
                      - Multilanguage updates
                      - Library tab: Fixed erroneous access restriction behaviour
                      - Library tab: Fixed visibility of feed expiry interval
-
-
-
-
-HISTORY:
-This app was originally written by acidumirae@gmail.com and kudos goes to his work.
-My goal is to keep the development of Web UI active and to continue to improve the application.
+- 1.5.3 - 01/06/2014 - Video now again preselected while adding new online sources
+                     - Removed redundant code
+                     - Rewritten major parts of code
+                     - Added button to check stream URL while adding or editing online sources
+                     - Fixed bug for not providing parameters for REST API call postAction
+                     - Updated page icon
+                     - Improved error handling and error information output
+                     - Fixed metadata rescan and library refresh
+                     - Fixed refresh button in status tab
+                     - Names of online sources can now contain characters like ' < > &
+                     - Updated to jQuery 1.9.1
+                     - Updated datatables and ColVis to latest nightly builds
+                     - Fix a bug where ocasionally a selected local folder cannot be added or a wrong selection dialog might appear
+                     - Updated Serviio version check
+                     - Added page reload after OS import and license upload
+                     - Revised style of renderers, local and online sources table to implement scrollbar
+                     - Changed license upload method
+                     - Changed filename for exported online sources
+                     - Minor other bug fixes
+                     - Multilanguage updates
 
 ANNOUNCEMENTS:
-http://forum.serviio.org/viewtopic.php?f=5&t=1310
-
-Questions? mailto:mpemberton5@gmail.com
-
-Like the app?  Go to www.markpemberton.com and donate a few bucks for a good cup of coffee!
-
-
-TODO:
-Optionalize the location of the Online Resources tab (either on the main tab list or where it is now)
-If adding from Online Source, check for duplicates
-sorting of OS items?
+http://forum.serviio.org/viewtopic.php?f=17&t=12593
