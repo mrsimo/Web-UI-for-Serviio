@@ -624,7 +624,7 @@ class ServiioService extends RestRequest
         $root->appendChild($xmlDoc->createElement("remoteUserPassword", $passwd));
         $root->appendChild($xmlDoc->createElement("preferredRemoteDeliveryQuality", $quality));
 		$root->appendChild($xmlDoc->createElement("portMappingEnabled", $mapping));
-		$root->appendChild($xmlDoc->createElement("externalAddress", $address));
+		$root->appendChild($xmlDoc->createElement("externalAddress",  stripslashes(htmlspecialchars($address))));
 
         /*
         header("Content-Type: text/plain");
@@ -757,8 +757,8 @@ class ServiioService extends RestRequest
         $deliverySubtitles->appendChild($xmlDoc->createElement("embeddedSubtitlesExtractionEnabled", $subtitlesextraction));
         $deliverySubtitles->appendChild($xmlDoc->createElement("hardSubsEnabled", $hardsubsenabled));
         $deliverySubtitles->appendChild($xmlDoc->createElement("hardSubsForced", $hardsubsforced));
-        $deliverySubtitles->appendChild($xmlDoc->createElement("preferredLanguage", $language));
-		$deliverySubtitles->appendChild($xmlDoc->createElement("hardSubsCharacterEncoding", $characterEncoding));
+        $deliverySubtitles->appendChild($xmlDoc->createElement("preferredLanguage", stripslashes(htmlspecialchars($language))));
+		$deliverySubtitles->appendChild($xmlDoc->createElement("hardSubsCharacterEncoding",  stripslashes(htmlspecialchars($characterEncoding))));
 
         /*
         header("Content-Type: text/plain");
@@ -833,25 +833,27 @@ class ServiioService extends RestRequest
         $sharedFolders = $root->appendChild($xmlDoc->createElement("sharedFolders"));
 
         /* FOLDERS */
-        foreach ($repo[0] as $id=>$entry) {
-            $Folder = $sharedFolders->appendChild($xmlDoc->createElement("sharedFolder"));
-            if ($entry[4] != "new") {
-                $Folder->appendChild($xmlDoc->createElement("id", $id));
-            }
-            $Folder->appendChild($xmlDoc->createElement("folderPath", $entry[0]));
+        if (isset($repo[0])) {
+            foreach ($repo[0] as $id=>$entry) {
+                $Folder = $sharedFolders->appendChild($xmlDoc->createElement("sharedFolder"));
+                if ($entry[4] != "new") {
+                    $Folder->appendChild($xmlDoc->createElement("id", $id));
+                }
+                $Folder->appendChild($xmlDoc->createElement("folderPath", stripslashes(htmlspecialchars($entry[0]))));
 
-            $supportedFileTypes = $Folder->appendChild($xmlDoc->createElement("supportedFileTypes"));
-            foreach ($entry[1] as $type) {
-                $supportedFileTypes->appendChild($xmlDoc->createElement("fileType", $type));
-            }
+                $supportedFileTypes = $Folder->appendChild($xmlDoc->createElement("supportedFileTypes"));
+                foreach ($entry[1] as $type) {
+                    $supportedFileTypes->appendChild($xmlDoc->createElement("fileType", $type));
+                }
 
-            $Folder->appendChild($xmlDoc->createElement("descriptiveMetadataSupported", $entry[2]));
-            $Folder->appendChild($xmlDoc->createElement("scanForUpdates", $entry[3]));
+                $Folder->appendChild($xmlDoc->createElement("descriptiveMetadataSupported", $entry[2]));
+                $Folder->appendChild($xmlDoc->createElement("scanForUpdates", $entry[3]));
 
-            if (is_array($entry[5])) {
-                $accessGroupIds = $Folder->appendChild($xmlDoc->createElement("accessGroupIds"));
-                foreach ($entry[5] as $grpId) {
-                    $accessGroupIds->appendChild($xmlDoc->createElement("id", $grpId));
+                if (is_array($entry[5])) {
+                    $accessGroupIds = $Folder->appendChild($xmlDoc->createElement("accessGroupIds"));
+                    foreach ($entry[5] as $grpId) {
+                        $accessGroupIds->appendChild($xmlDoc->createElement("id", $grpId));
+                    }
                 }
             }
         }
@@ -869,12 +871,14 @@ class ServiioService extends RestRequest
                     $Folder->appendChild($xmlDoc->createElement("id", $id));
                 }
                 $Folder->appendChild($xmlDoc->createElement("repositoryType", $entry[0]));
-                $Folder->appendChild($xmlDoc->createElement("contentUrl", str_replace("&", "&amp;", $entry[1])));
+                //$Folder->appendChild($xmlDoc->createElement("contentUrl", str_replace("&", "&amp;", urldecode($entry[1]))));
+                $Folder->appendChild($xmlDoc->createElement("contentUrl", stripslashes(htmlspecialchars($entry[1]))));
                 $Folder->appendChild($xmlDoc->createElement("fileType", $entry[2]));
-                $Folder->appendChild($xmlDoc->createElement("thumbnailUrl", $entry[6]));
-                $Folder->appendChild($xmlDoc->createElement("repositoryName", $entry[4]));
+                $Folder->appendChild($xmlDoc->createElement("thumbnailUrl", stripslashes(htmlspecialchars($entry[6]))));
+                //$Folder->appendChild($xmlDoc->createElement("repositoryName", str_replace("&", "&amp;", urldecode(stripslashes($entry[4])))));
+                $Folder->appendChild($xmlDoc->createElement("repositoryName", stripslashes(htmlspecialchars($entry[4]))));
                 $Folder->appendChild($xmlDoc->createElement("enabled", $entry[5]));
-
+                
                 if (is_array($entry[7])) {
                     $accessGroupIds = $Folder->appendChild($xmlDoc->createElement("accessGroupIds"));
                     foreach ($entry[7] as $grpId) {
@@ -968,7 +972,6 @@ class ServiioService extends RestRequest
         parent::setRequestBody($backup);
         parent::execute();
         return print_r(parent::getResponseBody());
-		
     }
 }
 
