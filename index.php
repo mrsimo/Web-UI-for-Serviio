@@ -98,12 +98,12 @@ $appInfo = $serviio->getApplication();
 var oTable = "";
 
 function callSelectionDialog(dialogDivTagId, dialogHtml, dialogTitle, dialogButtons, treeview) {
-    var height="410";
+    /*var height="410";
     var width="570";
     if ( dialogDivTagId == "Add_Serviidb_Item") {
         var height="480";
         var width="850";
-    }
+    }*/
     $("#"+dialogDivTagId)
         .dialog({
             autoOpen: false,
@@ -140,11 +140,19 @@ function callSelectionDialog(dialogDivTagId, dialogHtml, dialogTitle, dialogButt
 };
 
 function callDialog(dialogDivTagId, dialogHtml, dialogTitle, dialogButtons) {
+    var height="410";
+    var width="570";
+    if ( dialogDivTagId == "Add_Serviidb_Item") {
+        height="480";
+        width="850";
+    }
     $("#"+dialogDivTagId)
         .dialog({
             autoOpen: false,
-            height: 360,
-            width: 620,
+            //height: 360,
+            //width: 620,
+            height: height,
+            width: width,
             modal: true
         })
         .dialog('option', 'title', dialogTitle)
@@ -247,7 +255,7 @@ function updateOsSourceRow(newID, sel_row, action) {
         } else {
             return false;
         }
-        var swState = "off";
+        var swState = "on";
     } else {
         $("input[name=os_url_"+newID+"]").val($("#sourceURL").val());
         $("#os_name_v_"+newID).attr('title', $("#sourceURL").val());
@@ -272,14 +280,17 @@ function updateOsSourceRow(newID, sel_row, action) {
     
     if (feedType == "FEED" || feedType == "RSS ATOM FEED") {
         spanContent = "<img src='images/icon_feed.png' height='16' alt='<?php echo tr('tab_library_online_sources_repository_table_share_feed','Feed')?>'>&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_feed','Feed')?>";
+        feedType = "FEED";
     } else if (feedType == "WEB_RESOURCE" || feedType == "WEB RESOURCE") {
         spanContent = "<img src='images/icon_web_resource.png' height='16' alt='<?php echo tr('tab_library_online_sources_repository_table_share_web_resource','Web resource')?>'>&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_web_resource','Web resource')?>";
+        feedType = "WEB_RESOURCE";
     } else if (feedType == "LIVE_STREAM" || feedType == "LIVE STREAMS") {
         spanContent = "<img src='images/icon_satelite_black.png' height='16' alt='<?php echo tr('tab_library_online_sources_repository_table_share_live_steam','Live stream')?>'>&nbsp;<?php echo tr('tab_library_online_sources_repository_table_share_live_steam','Live stream')?>";
+        feedType = "LIVE_STREAM";
     }
     
     $("#os_type_v_"+newID).html(spanContent);
-    $("#os_type_v_"+newID).val(feedType)
+    $("#os_type_"+newID).val(feedType);
     
     spanContent = "";
     
@@ -332,7 +343,7 @@ function curDate() {
     return formattedDate[2] + "-" + formattedDate[1] + "-" + formattedDate[0] + "-" + formattedDate[3] + "-" + formattedDate[4] + "-" + formattedDate[5];
 }
 
-function clonseDefaultTableRow(defaultRow, tableDivTagId) {
+function cloneDefaultTableRow(defaultRow, tableDivTagId) {
     if ($("#" + tableDivTagId + " tbody tr").length != 0) {
         $("#" + defaultRow + " tr:last").clone().insertAfter("#" + tableDivTagId + " tr:last");
     } else {
@@ -886,7 +897,7 @@ indexes.onajaxpageload=function(pageurl) {
                         var tableDivTagId = "libraryTableFolders";
                         var defaultRow = "default_folder_row";
                         
-                        clonseDefaultTableRow(defaultRow, tableDivTagId);
+                        cloneDefaultTableRow(defaultRow, tableDivTagId);
                         updateAttributeNames(tableDivTagId, "id", newID);
                         updateAttributeNames(tableDivTagId, "name", newID);
                         rowStyle("libraryTableFolders");
@@ -927,7 +938,7 @@ indexes.onajaxpageload=function(pageurl) {
                             var tableDivTagId = "libraryTableOnlineSources";
                             var defaultRow = "default_os_row";
                         
-                            clonseDefaultTableRow(defaultRow, tableDivTagId);
+                            cloneDefaultTableRow(defaultRow, tableDivTagId);
                             updateAttributeNames(tableDivTagId, "id", newOSId);
                             updateAttributeNames(tableDivTagId, "name", newOSId);
                             updateOsSourceRow(newOSId, newOSId, "add");
@@ -1093,7 +1104,7 @@ indexes.onajaxpageload=function(pageurl) {
                         var tableDivTagId = "libraryTableOnlineSources";
                         var defaultRow = "default_os_row";
                         
-                        clonseDefaultTableRow(defaultRow, tableDivTagId);
+                        cloneDefaultTableRow(defaultRow, tableDivTagId);
                         updateAttributeNames(tableDivTagId, "id", newOSId);
                         updateAttributeNames(tableDivTagId, "name", newOSId);
                         updateOsSourceRow(newOSId, newOSId, "addserviidb");
