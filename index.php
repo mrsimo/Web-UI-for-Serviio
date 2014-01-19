@@ -604,18 +604,25 @@ indexes.onajaxpageload=function(pageurl) {
                 return false;
             });
         
-            $( "#rendererTable tbody" ).selectable({
-                filter: "tr",
-                distance: 0,
-                stop: function(){
-                    sourceId=[];
-                    sourceData=[];
-                    $( ".ui-selected", this ).each(function() {
-                        sourceId.push($(this).attr('id'));
-                        sourceData.push($(this).children("td:nth-child(3)").text() + "  -  " + $(this).children("td:nth-child(4)").text());
-                    }); 
-                }
-            });
+            $( "#rendererTable tbody" )
+                .mousedown(function (evt) {
+                    if (evt.pageX > 939) {
+                        evt.stopImmediatePropagation();
+                        return false;
+                    }
+                })
+                .selectable({
+                    filter: "tr",
+                    distance: 0,
+                    stop: function(){
+                        sourceId=[];
+                        sourceData=[];
+                        $( ".ui-selected", this ).each(function() {
+                            sourceId.push($(this).attr('id'));
+                            sourceData.push($(this).children("td:nth-child(3)").text() + "  -  " + $(this).children("td:nth-child(4)").text());
+                        }); 
+                    }
+                });
             
             $("#remove-renderer").click(function(e) {
                 if (sourceData.length == 0) {
@@ -678,6 +685,12 @@ indexes.onajaxpageload=function(pageurl) {
                         rowStyle("libraryTableOnlineSources");
                     }
                 })
+                .mousedown(function (evt) {
+                    if (evt.pageX > 939) {
+                        evt.stopImmediatePropagation();
+                        return false;
+                    }
+                })
                 .selectable({
                     filter: "tr",
                     distance: 0,
@@ -693,6 +706,12 @@ indexes.onajaxpageload=function(pageurl) {
                 });
                 
             $( "#libraryTableFolders tbody" )
+                .mousedown(function (evt) {
+                    if (evt.pageX > 939) {
+                        evt.stopImmediatePropagation();
+                        return false;
+                    }
+                })
                 .selectable({
                     filter: "tr",
                     distance: 0,
