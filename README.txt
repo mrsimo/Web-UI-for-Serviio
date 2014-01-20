@@ -93,7 +93,7 @@ CHANGELOG:
                      - Changed dialog size for Serviidb
                      - Fixed resource type for OS
                      - Serviidb OS item are now enabled by default
-                     - Fuxed a bug where scrollbar is not clickable in certain tables in Chrome
+                     - Fixed a bug where scrollbar is not clickable in certain tables in Chrome
 
 ANNOUNCEMENTS:
 http://forum.serviio.org/viewtopic.php?f=17&t=12593
