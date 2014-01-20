@@ -89,6 +89,11 @@ CHANGELOG:
                      - Changed filename for exported online sources
                      - Minor other bug fixes
                      - Multilanguage updates
+- 1.5.4 - 01/20/2014 - Corrected function name
+                     - Changed dialog size for Serviidb
+                     - Fixed resource type for OS
+                     - Serviidb OS item are now enabled by default
+                     - Fuxed a bug where scrollbar is not clickable in certain tables in Chrome
 
 ANNOUNCEMENTS:
 http://forum.serviio.org/viewtopic.php?f=17&t=12593
