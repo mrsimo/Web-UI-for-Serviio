@@ -256,6 +256,7 @@ function updateOsSourceRow(newID, sel_row, action) {
             return false;
         }
         var swState = "on";
+        $("#os_stat_"+sel_row).val("true");
     } else {
         $("input[name=os_url_"+newID+"]").val($("#sourceURL").val());
         $("#os_name_v_"+newID).attr('title', $("#sourceURL").val());
@@ -268,14 +269,15 @@ function updateOsSourceRow(newID, sel_row, action) {
         } else {
             $("#os_name_v_"+newID).text($("#name").val());
         }
+        
         var swState = "off";
-    }
-    
-    if ($("#enabled").prop('checked')) {
-        $("#os_stat_"+sel_row).val("true");
-        swState = "on";
-    } else {
-        $("#os_stat_"+sel_row).val("false");
+        
+        if ($("#enabled").prop('checked')) {
+            $("#os_stat_"+sel_row).val("true");
+            swState = "on";
+        } else {
+            $("#os_stat_"+sel_row).val("false");
+        }
     }
     
     if (feedType == "FEED" || feedType == "RSS ATOM FEED") {
