@@ -616,6 +616,7 @@ indexes.onajaxpageload=function(pageurl) {
                 .selectable({
                     filter: "tr",
                     distance: 0,
+                    cancel: "img,a,select,iphone_switch_container",
                     stop: function(){
                         sourceId=[];
                         sourceData=[];
