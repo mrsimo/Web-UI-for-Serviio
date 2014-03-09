@@ -75,13 +75,6 @@
             <?php } ?>
             </select>
         </td>
-        <td>
-            <input type="hidden" id="enabled_<?php echo $id?>" name="enabled_<?php echo $id?>" value="<?php echo $renderer[4]?>">
-            <input type="hidden" name="renderer_<?php echo $id?>" value="<?php echo $id?>">
-            <input type="hidden" name="name_<?php echo $id?>" value="<?php echo $renderer[1]?>">
-            <input type="hidden" name="ipAddress_<?php echo $id?>" value="<?php echo $renderer[0]?>">
-            <input type="hidden" name="access_<?php echo $id?>" value="<?php echo $renderer[5]?>">
-        </td>
     </tr>
     <?php } ?>
     </tbody>
