@@ -20,7 +20,9 @@
 			$download_cover = getPostVar("download_cover","0")==1?"true":"false";	// videoOnlineArtExtractorEnabled
 			$metadata_language = getPostVar("metadata_language","en");				// metadataLanguage
 			$orig_title = getPostVar("orig_title","0")==1?"true":"false";			// retrieveOriginalTitle
-			$errorCode = $serviio->putMetadata($audio_cover,$cover_search,$download_cover,$thumbnails,$img_thumbnails,$metadata_language,$online_sources,$orig_title);
+            //$filter_rating = getPostVar("filter_rating","0")==1?"true":"false";		// filterVideosByRating
+			//$errorCode = $serviio->putMetadata($audio_cover,$cover_search,$download_cover,$thumbnails,$img_thumbnails,$metadata_language,$online_sources,$orig_title,$filter_rating);
+            $errorCode = $serviio->putMetadata($audio_cover,$cover_search,$download_cover,$thumbnails,$img_thumbnails,$metadata_language,$online_sources,$orig_title);
 
 			return $errorCode;
 		}
@@ -37,4 +39,5 @@
 	$serviio->getMetadata();
 	$descriptiveMetadataExtractors = $serviio->getReferenceData('descriptiveMetadataExtractors');
 	$metadataLanguages = $serviio->getReferenceData('metadataLanguages');
+    //$ratings = $serviio->getReferenceData('ratings');
 ?>
