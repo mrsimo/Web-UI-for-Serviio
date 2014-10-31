@@ -1513,7 +1513,7 @@ indexes.onajaxpageload=function(pageurl) {
                                 "dataType": "xml",
                                 "initializing": "<?php echo tr('status_message_importing','Uploading...')?>",
                                 "genericError": "<?php echo tr('status_message_error_upload_license','Error uploading license!')?>",
-                                0: "<?php echo tr('status_message_imported','License uploaded successfully!')?>",
+                                0: "<?php echo tr('status_message_import_license','License imported successfully!')?>",
                                 555: "<?php echo tr('error_license_555','License is invalid!')?>",
                                 560: "<?php echo tr('error_license_560','Uploaded file does not appear to be a license file!')?>"
                             };
