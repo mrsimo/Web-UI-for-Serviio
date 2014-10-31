@@ -32,6 +32,7 @@ class ServiioService extends RestRequest
     public $metadataLanguage;
     public $descriptiveMetadataExtractor;
     public $retrieveOriginalTitle;
+    //public $filterVideosByRating;
 
     public $descriptiveMetadataExtractors;
     public $browsingCategoriesLanguages;
@@ -250,6 +251,9 @@ class ServiioService extends RestRequest
 			case "networkInterfaces":
 				$this->boundNICName = $result;					//status.php
 				break;
+            /*case "ratings":
+				$this->ratungs = $result;	    				//status.php
+				break;*/
 		}
 		
         return $result;
@@ -298,6 +302,8 @@ class ServiioService extends RestRequest
         $updateVersionAvailable = (string)$xml->updateVersionAvailable;
 
         $edition = (string)$xml->edition;
+        //$cdsAnonymousEnabled = (string)$xml->cdsAnonymousEnabled;
+        
         $this->lic = array();
         // need to init these variables - thanks Strupniveral
         $id = "";
@@ -316,6 +322,7 @@ class ServiioService extends RestRequest
         // record license type as global
         $this->licenseEdition = $edition;
         $this->licenseType = $type;
+        //$this->cdsAnonymousEnabled = $cdsAnonymousEnabled;
 
         return array(
                      "version"=>$currentVersion,
@@ -325,7 +332,8 @@ class ServiioService extends RestRequest
                      "licenseType"=>$type,
                      "licenseName"=>$name,
                      "licenseEmail"=>$email,
-                     "licenseExpiresInMinutes"=>$expiresInMinutes
+                     "licenseExpiresInMinutes"=>$expiresInMinutes//,
+                     //"cdsAnonymousEnabled"=>$cdsAnonymousEnabled
                      );
     }
 
@@ -425,6 +433,7 @@ class ServiioService extends RestRequest
         $metadataLanguage = (string)$xml->metadataLanguage;
         $retrieveOriginalTitle = (string)$xml->retrieveOriginalTitle;
         $descriptiveMetadataExtractor = (string)$xml->descriptiveMetadataExtractor;
+        //$filterVideosByRating = (string)$xml->filterVideosByRating;
         $this->audioLocalArtExtractorEnabled = $audioLocalArtExtractorEnabled;
         $this->videoLocalArtExtractorEnabled = $videoLocalArtExtractorEnabled;
         $this->videoOnlineArtExtractorEnabled = $videoOnlineArtExtractorEnabled;
@@ -433,7 +442,10 @@ class ServiioService extends RestRequest
         $this->metadataLanguage = $metadataLanguage;
         $this->retrieveOriginalTitle = $retrieveOriginalTitle;
         $this->descriptiveMetadataExtractor = $descriptiveMetadataExtractor;
+        //$this->filterVideosByRating = $filterVideosByRating;
+        //return array($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled, $videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle, $filterVideosByRating);
         return array($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled, $videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle);
+
     }
 
     /**
@@ -574,7 +586,9 @@ class ServiioService extends RestRequest
         //create the root element
         $root = $xmlDoc->appendChild($xmlDoc->createElement("status"));
 		
-		$root->appendChild($xmlDoc->createElement("boundNICName", $bound_nic));
+		if($bound_nic!="") {
+            $root->appendChild($xmlDoc->createElement("boundNICName", $bound_nic));
+        }
 		$root->appendChild($xmlDoc->createElement("rendererEnabledByDefault", $rendererEnabledByDefault));
 		$root->appendChild($xmlDoc->createElement("defaultAccessGroupId", $defaultAccessGroupId));
 
@@ -744,7 +758,9 @@ class ServiioService extends RestRequest
 
         // create sub elements for transcoding
         $deliveryTranscoding->appendChild($xmlDoc->createElement("audioDownmixing", $audio));
-        $deliveryTranscoding->appendChild($xmlDoc->createElement("threadsNumber", $cores));
+        if($cores!="") {
+            $deliveryTranscoding->appendChild($xmlDoc->createElement("threadsNumber", $cores));
+        }
         $deliveryTranscoding->appendChild($xmlDoc->createElement("transcodingFolderLocation", $location));
         $deliveryTranscoding->appendChild($xmlDoc->createElement("transcodingEnabled", $transcoding));
 		$deliveryTranscoding->appendChild($xmlDoc->createElement("bestVideoQuality", $quality));
@@ -780,6 +796,8 @@ class ServiioService extends RestRequest
      */
     public function putMetadata($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled,
     $videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle)
+    //public function putMetadata($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled,
+    //$videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle, $filterVideosByRating)
     {
         // create the xml document
         $xmlDoc = new DOMDocument();
@@ -799,6 +817,7 @@ class ServiioService extends RestRequest
         $root->appendChild($xmlDoc->createElement("metadataLanguage", $metadataLanguage));
         $root->appendChild($xmlDoc->createElement("retrieveOriginalTitle", $retrieveOriginalTitle));
         $root->appendChild($xmlDoc->createElement("descriptiveMetadataExtractor", $descriptiveMetadataExtractor));
+        //$root->appendChild($xmlDoc->createElement("filterVideosByRating", $filterVideosByRating));
 
         /*
         header("Content-Type: text/plain");
