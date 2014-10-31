@@ -134,8 +134,13 @@ var profiles = new Array();
     <div id="netset1" class="tabcontent">
 		<?php echo tr('tab_status_bound_ip_address','Bound IP address')?>:&nbsp;
 		<select name="bound_nic">
-			<?php foreach ($interfaces as $key=>$val) { ?>
-			<option value="<?php echo $key?>"<?php echo $key==$statusResponse["boundNICName"]?" selected":""?>><?php echo $val?></option>
+			<?php array_unshift($interfaces, tr('tab_status_bound_autodetect','Automatically detected')); foreach ($interfaces as $key=>$val) { ?>
+			<option value="<?php if($key=="0") {
+                                    echo "";
+                                 }
+                                 else {
+                                    echo $key;
+                                 }?>"<?php echo $key==$statusResponse["boundNICName"]?" selected":""?>><?php echo $val?></option>
 			<?php } ?>
 		</select>
     </div>
