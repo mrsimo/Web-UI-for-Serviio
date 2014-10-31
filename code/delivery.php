@@ -13,7 +13,7 @@
 			$errorCode = 0;
 			$transcoding = getPostVar("transcoding","0")==1?"true":"false";
 			$location = getPostVar("location","");
-			$cores = getPostVar("cores","1");
+			$cores = getPostVar("cores","");
 			$audio = getPostVar("audio","")=="downmix"?"true":"false";
 			$quality = getPostVar("quality","0")==1?"true":"false";
 
