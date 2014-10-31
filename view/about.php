@@ -11,17 +11,10 @@
     echo tr('tab_about_license_to','Licensed To: ');
     echo $ret['licenseName'] . " (" . $ret['licenseEmail'] . ")";
     echo "<br>";
-    //echo tr('tab_about_license_info','License Info: ');
-    //echo $ret['edition'] . " / " . $ret['licenseType'] . " / expires in " . $ret['licenseExpiresInMinutes'] . " minutes";
-    //echo "<br>";
-    /*
-    echo "<input name='uploadfile' type='file'><input type='submit' value='Upload License' readonly>";
-    */
 ?>
 
-
-
 <form method="post" action="" id="licenseform" name="license" accept-charset="utf-8">
+<input type="hidden" id="process" name="process" value="">
 
 <span id="uploadLicense">
     <a class="ui-button ui-widget ui-state-default ui-corner-all btn-small"><?php echo tr('dialog_load_license','Load new license')?></a>
@@ -30,12 +23,7 @@
 <br>
 
 </form>
-
-
-        <span id="savingMsg" class="savingMsg"></span>
-
-        
-
+	<span id="savingMsg" class="savingMsg"></span>
 <br>
 <?php echo tr('tab_about_text','DLNA media streaming server<br>Copyright 2009-2013 Petr Nejedly<br>
 Web UI for Serviio maintained by Sascha Eilers<br>
