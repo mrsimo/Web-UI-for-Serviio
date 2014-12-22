@@ -32,7 +32,7 @@ class ServiioService extends RestRequest
     public $metadataLanguage;
     public $descriptiveMetadataExtractor;
     public $retrieveOriginalTitle;
-    //public $filterVideosByRating;
+    public $filterVideosByRating;
 
     public $descriptiveMetadataExtractors;
     public $browsingCategoriesLanguages;
@@ -104,7 +104,6 @@ class ServiioService extends RestRequest
             $accessGroupId = (string)$item->accessGroupId;
             $this->renderers[$uuid] = array($ipAddress, $name, $profileId, $status, $enabled, $accessGroupId);
         }
-        //return array("serverStatus"=>$serverStatus, "renderers"=>$this->renderers, "bound_nic"=>$bound_nic);
         return array("serverStatus"=>$serverStatus, "renderers"=>$this->renderers, "boundNICName"=>$boundNICName, "rendererEnabledByDefault"=>$rendererEnabledByDefault, "defaultAccessGroupId"=>$defaultAccessGroupId);
     }
 
@@ -189,9 +188,9 @@ class ServiioService extends RestRequest
         $libraryAdditionsCheckerRunning = (string)$xml->libraryAdditionsCheckerRunning;
         $lastAddedFileName = (string)$xml->lastAddedFileName;
         $numberOfAddedFiles = (string)$xml->numberOfAddedFiles;
-        return array("libraryUpdatesCheckerRunning"=>$libraryUpdatesCheckerRunning,
-                     "libraryAdditionsCheckerRunning"=>$libraryAdditionsCheckerRunning,
-                     "lastAddedFileName"=>$lastAddedFileName,
+        //return array("libraryUpdatesCheckerRunning"=>$libraryUpdatesCheckerRunning,
+        //             "libraryAdditionsCheckerRunning"=>$libraryAdditionsCheckerRunning,
+        return array("lastAddedFileName"=>$lastAddedFileName,
                      "numberOfAddedFiles"=>$numberOfAddedFiles);
     }
 
@@ -251,9 +250,9 @@ class ServiioService extends RestRequest
 			case "networkInterfaces":
 				$this->boundNICName = $result;					//status.php
 				break;
-            /*case "ratings":
-				$this->ratungs = $result;	    				//status.php
-				break;*/
+            case "ratings":
+				$this->ratings = $result;	    				//metadata.php
+				break;
 		}
 		
         return $result;
@@ -381,7 +380,7 @@ class ServiioService extends RestRequest
         $this->searchHiddenFiles = (string)$xml->searchHiddenFiles;
         $this->searchForUpdates = (string)$xml->searchForUpdates;
         $this->automaticLibraryUpdate = (string)$xml->automaticLibraryUpdate;
-        $this->automaticLibraryUpdateInterval = (string)$xml->automaticLibraryUpdateInterval;
+        //$this->automaticLibraryUpdateInterval = (string)$xml->automaticLibraryUpdateInterval;
 
         // onlineRepositories
         foreach ($xml->onlineRepositories as $onlineRepositories) {
@@ -433,7 +432,7 @@ class ServiioService extends RestRequest
         $metadataLanguage = (string)$xml->metadataLanguage;
         $retrieveOriginalTitle = (string)$xml->retrieveOriginalTitle;
         $descriptiveMetadataExtractor = (string)$xml->descriptiveMetadataExtractor;
-        //$filterVideosByRating = (string)$xml->filterVideosByRating;
+        $filterVideosByRating = (string)$xml->filterVideosByRating;
         $this->audioLocalArtExtractorEnabled = $audioLocalArtExtractorEnabled;
         $this->videoLocalArtExtractorEnabled = $videoLocalArtExtractorEnabled;
         $this->videoOnlineArtExtractorEnabled = $videoOnlineArtExtractorEnabled;
@@ -442,9 +441,9 @@ class ServiioService extends RestRequest
         $this->metadataLanguage = $metadataLanguage;
         $this->retrieveOriginalTitle = $retrieveOriginalTitle;
         $this->descriptiveMetadataExtractor = $descriptiveMetadataExtractor;
-        //$this->filterVideosByRating = $filterVideosByRating;
-        //return array($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled, $videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle, $filterVideosByRating);
-        return array($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled, $videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle);
+        $this->filterVideosByRating = $filterVideosByRating;
+        return array($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled, $videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle, $filterVideosByRating);
+        //return array($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled, $videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle);
 
     }
 
@@ -794,10 +793,10 @@ class ServiioService extends RestRequest
 
     /**
      */
-    public function putMetadata($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled,
-    $videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle)
     //public function putMetadata($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled,
-    //$videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle, $filterVideosByRating)
+    //$videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle)
+    public function putMetadata($audioLocalArtExtractorEnabled, $videoLocalArtExtractorEnabled, $videoOnlineArtExtractorEnabled,
+    $videoGenerateLocalThumbnailEnabled, $imageGenerateLocalThumbnailEnabled, $metadataLanguage, $descriptiveMetadataExtractor, $retrieveOriginalTitle, $filterVideosByRating)
     {
         // create the xml document
         $xmlDoc = new DOMDocument();
@@ -817,7 +816,7 @@ class ServiioService extends RestRequest
         $root->appendChild($xmlDoc->createElement("metadataLanguage", $metadataLanguage));
         $root->appendChild($xmlDoc->createElement("retrieveOriginalTitle", $retrieveOriginalTitle));
         $root->appendChild($xmlDoc->createElement("descriptiveMetadataExtractor", $descriptiveMetadataExtractor));
-        //$root->appendChild($xmlDoc->createElement("filterVideosByRating", $filterVideosByRating));
+        $root->appendChild($xmlDoc->createElement("filterVideosByRating", $filterVideosByRating));
 
         /*
         header("Content-Type: text/plain");
@@ -879,7 +878,7 @@ class ServiioService extends RestRequest
         $root->appendChild($xmlDoc->createElement("searchHiddenFiles", $this->searchHiddenFiles));
         $root->appendChild($xmlDoc->createElement("searchForUpdates", $this->searchForUpdates));
         $root->appendChild($xmlDoc->createElement("automaticLibraryUpdate", $this->automaticLibraryUpdate));
-        $root->appendChild($xmlDoc->createElement("automaticLibraryUpdateInterval", $this->automaticLibraryUpdateInterval));
+        //$root->appendChild($xmlDoc->createElement("automaticLibraryUpdateInterval", $this->automaticLibraryUpdateInterval));
 
         /* Online Repositories */
         $sharedFolders = $root->appendChild($xmlDoc->createElement("onlineRepositories"));
