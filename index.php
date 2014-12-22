@@ -22,20 +22,15 @@ $appInfo = $serviio->getApplication();
 <meta name="format-detection" content="address=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
-<!--<link rel="apple-touch-icon" href="images/serviio.png">
-<link rel="icon" href="images/favicon.ico" type="image/x-icon" />-->
 <link href="images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 
 <script type="text/javascript" src="js/Math.uuid.js"></script>
-<!--<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>-->
-<!--<script src="js/jquery-ui.min.js" type="text/javascript"></script>-->
 <script src="js/jquery-1.9.1.js" type="text/javascript"></script>
 <script src="js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
 <link href="css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css" />
 <script src="js/download.js" type="text/javascript"></script>
 <script src="js/jquery.iphone-switch.js" type="text/javascript"></script>
 
-<!--<link href="js/DataTables-1.9.4/examples/examples_support/themes/smoothness/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" />-->
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
 
 <style>
@@ -404,8 +399,6 @@ function parseUrl(url) {
         <div id="optionBar">
             <div id="wuSites">
                 <span><b><?php echo tr('status_message_server_status','Server Status')?>:&nbsp;</b><span id="svrs"></span></span>
-                <span><b><?php echo tr('status_message_updates','Checking Updates')?>:&nbsp;</b><span id="lucr"></span></span>
-                <span><b><?php echo tr('status_message_checking_additions','Checking Additions')?>:&nbsp;</b><span id="lacr"></span></span>
                 <span><b><?php echo tr('status_message_files_added','Files Added')?>:&nbsp;</b><span id="nofa"></span></span>
                 <span><b><?php echo tr('status_message_last_added','Last File Added')?>:&nbsp;</b><span id="lafn"></span></span>
             </div>
@@ -430,16 +423,6 @@ $(document).ready(function(){
             } else {
                 $("#svrs").html("<img src='images/bullet_red.png' title='not running'>");
             }
-            if (json.libraryUpdatesCheckerRunning == 'true') {
-                $("#lucr").html("<img src='images/bullet_green.png' title='running'>");
-            } else {
-                $("#lucr").html("<img src='images/bullet_red.png' title='not running'>");
-            }
-            if (json.libraryAdditionsCheckerRunning == 'true') {
-                $("#lacr").html("<img src='images/bullet_green.png' title='running'>");
-            } else {
-                $("#lacr").html("<img src='images/bullet_red.png' title='not running'>");
-            }
             $("#lafn").text(json.lastAddedFileName); 
             $("#nofa").text(json.numberOfAddedFiles); 
         });
@@ -449,7 +432,6 @@ $(document).ready(function(){
 
 <?php
 // Application version check
-// - temporarily disabled
 $message = "";
 $serviioVersion=str_replace(".", "", $appInfo["version"]);
 $requiredVersion=str_replace(".", "", $version_req);
