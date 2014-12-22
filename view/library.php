@@ -89,11 +89,7 @@
             </ul>
             <div style="border:1px solid gray; width:98%; margin-bottom: 1em; padding: 10px">
                 <div id="libstab1" class="tabcontent">
-                    <input type="checkbox" name="autoupdate" value="1"<?php echo $serviio->automaticLibraryUpdate=="true"?" checked":""?>> <?php echo tr('tab_library_automatic_update','Keep library automatically updated')?>
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    <?php echo tr('tab_library_automatic_update_interval','Refresh interval (minutes)')?>:&nbsp;
-                    <input type="text" name="minutes" value="<?php echo $serviio->automaticLibraryUpdateInterval ?>" maxlength="3" size="3">
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <input type="checkbox" name="autoupdate" value="1"<?php echo $serviio->automaticLibraryUpdate=="true"?" checked":""?>> <?php echo tr('tab_library_automatic_update','Keep library automatically updated')?>&nbsp;&nbsp;&nbsp;
                     <input type="submit" id="refresh" name="refresh" value="<?php echo tr('button_refresh_library','Force refresh')?>" class="ui-button ui-widget ui-state-default ui-corner-all btn-small" />
                     <span id="forceRefreshMsg" class="forceRefreshMsg"></span>
                 </div>
