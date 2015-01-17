@@ -766,7 +766,7 @@ class ServiioContentDirectoryService extends RestRequest
             }
 
             $Folder->appendChild($xmlDoc->createElement("descriptiveMetadataSupported", $entry[2]));
-            $Folder->appendChild($xmlDoc->createElement("scanForUpdates", $entry[3]));
+            // $Folder->appendChild($xmlDoc->createElement("scanForUpdates", $entry[3]));
 
             $accessGroupIds = $Folder->appendChild($xmlDoc->createElement("accessGroupIds"));
             foreach ($entry[5] as $grpId) {
